@@ -21,6 +21,7 @@ import {
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import Header from "./components/Header";
+import Home from "./pages/Home";
 
 const { chains, provider } = configureChains(
 	[mainnet, polygon, optimism, arbitrum, avalanche, bsc, gnosis, fantom],
@@ -48,6 +49,7 @@ const customTheme: Theme = merge(midnightTheme(), {
 		modalBackground: "#17192E",
 		profileForeground: "#17192E",
 		connectButtonBackground: "#17192E",
+		modalBorder: "#363646",
 	},
 	radii: {
 		connectButton: "8px",
@@ -59,6 +61,7 @@ const App = () => {
 		<WagmiConfig client={wagmiClient}>
 			<RainbowKitProvider coolMode chains={chains} theme={customTheme}>
 				<Header />
+				<Home />
 			</RainbowKitProvider>
 		</WagmiConfig>
 	);
