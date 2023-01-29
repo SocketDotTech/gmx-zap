@@ -20,8 +20,11 @@ import {
 } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+import { QueryClient, QueryClientProvider } from "react-query";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+
+const queryClient = new QueryClient();
 
 const { chains, provider } = configureChains(
 	[mainnet, polygon, optimism, arbitrum, avalanche, bsc, gnosis, fantom],
@@ -58,12 +61,18 @@ const customTheme: Theme = merge(midnightTheme(), {
 
 const App = () => {
 	return (
-		<WagmiConfig client={wagmiClient}>
-			<RainbowKitProvider coolMode chains={chains} theme={customTheme}>
-				<Header />
-				<Home />
-			</RainbowKitProvider>
-		</WagmiConfig>
+		<QueryClientProvider client={queryClient}>
+			<WagmiConfig client={wagmiClient}>
+				<RainbowKitProvider
+					coolMode
+					chains={chains}
+					theme={customTheme}
+				>
+					<Header />
+					<Home />
+				</RainbowKitProvider>
+			</WagmiConfig>
+		</QueryClientProvider>
 	);
 };
 

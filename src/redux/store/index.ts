@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { counterReducer } from "../slices";
+import { chainsReducer } from "../slices";
+import { tokensReducer } from "../slices";
 
 export const store = configureStore({
 	reducer: {
-		counter: counterReducer,
+		chains: chainsReducer,
+		tokens: tokensReducer,
 	},
 });
 
