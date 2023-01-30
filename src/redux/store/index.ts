@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { chainsReducer } from "../slices";
 import { tokensReducer } from "../slices";
+import { glpReducer } from "../slices";
 
 export const store = configureStore({
 	reducer: {
 		chains: chainsReducer,
 		tokens: tokensReducer,
+		glp: glpReducer,
 	},
 });
 
