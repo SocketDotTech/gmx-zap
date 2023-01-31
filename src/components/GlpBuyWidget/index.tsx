@@ -1,5 +1,5 @@
 import React from "react";
-import ChainsSelect from "../ChainSelect/ChainsSelect";
+import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
 
 const GlpBuyWidget = () => {

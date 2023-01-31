@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { TokenDetail } from "../../types";
 
 export interface IGlpSliceState {
-	glpPrice: number;
+	glpPrice: string;
 	walletBalance: number;
 	stakedBalance: number;
 	apr: number;
@@ -11,7 +11,7 @@ export interface IGlpSliceState {
 }
 
 const initialState: IGlpSliceState = {
-	glpPrice: 0,
+	glpPrice: "0.00",
 	walletBalance: 0,
 	stakedBalance: 0,
 	apr: 0,
@@ -22,7 +22,7 @@ export const glpSlice = createSlice({
 	name: "chains",
 	initialState,
 	reducers: {
-		setGlpPrice: (state, action: PayloadAction<number>) => {
+		setGlpPrice: (state, action: PayloadAction<string>) => {
 			state.glpPrice = action.payload;
 		},
 		setWalletBalance: (state, action: PayloadAction<number>) => {

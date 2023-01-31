@@ -1,5 +1,4 @@
-import { RequestProps, getReq } from "../api";
-import { TokenDetail } from "../types";
+import { RequestProps, getReq } from "../../api";
 
 type Props = {
 	fromChainId: string;

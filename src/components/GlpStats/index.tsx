@@ -1,6 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useQuery } from "react-query";
+import { USD_DECIMALS } from "../../config";
+import { expandDecimals, formatAmount } from "../../helpers";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { setGlpPrice } from "../../redux";
+import { getGlpStats } from "../../services";
 
 const GlpStats = () => {
+	const dispatch = useAppDispatch();
+	const { outputChainId } = useAppSelector((state) => state.chains);
+	const { glpPrice } = useAppSelector((state) => state.glp);
+
+	const glpStatsResponse = useQuery(
+		["glpStats", outputChainId],
+		() =>
+			getGlpStats({
+				chainId: outputChainId,
+			}),
+		{
+			enabled: !!outputChainId,
+			refetchOnWindowFocus: false,
+		}
+	);
+
+	useEffect(() => {
+		if (!glpStatsResponse.isSuccess) return;
+		const glpPrice = glpStatsResponse.data?.glpPrice;
+		dispatch(setGlpPrice(glpPrice));
+	}, [glpStatsResponse.isSuccess, outputChainId]);
+
 	return (
 		<>
 			{/* GLP Stats */}
@@ -26,7 +54,7 @@ const GlpStats = () => {
 							Price
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							$0.940
+							${glpPrice}
 						</div>
 					</div>
 					<div className="w-full flex justify-between pb-1">

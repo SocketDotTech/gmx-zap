@@ -1,5 +1,4 @@
-export * from "./contracts";
-export * from "./rpc";
+import glpManagerAbi from "./abis/GlpManager.json";
 
 export const supportedInputChains = [
 	1, 10, 56, 100, 137, 250, 42161, 43114, 1313161554,
@@ -14,5 +13,12 @@ export const glpSupportedTokens: {
 	43114: ["WETH.E", "AVAX", "WBTC.E", "BTC.B", "USDC", "USDC.E"],
 };
 
-export const AVALANCHE = 43114;
-export const ARBITRUM = 42161;
+export const GLP_DECIMALS = 18;
+export const USD_DECIMALS = 30;
+
+export const abis = {
+	glpManagerAbi,
+};
+
+export * from "./contracts";
+export * from "./rpc";
