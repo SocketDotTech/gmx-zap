@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useQuery } from "react-query";
-import { USD_DECIMALS } from "../../config";
-import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setGlpPrice } from "../../redux";
 import { getGlpStats } from "../../services";
@@ -20,6 +18,8 @@ const GlpStats = () => {
 		{
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: false,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
 		}
 	);
 
