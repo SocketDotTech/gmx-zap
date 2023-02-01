@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { TokenDetail } from "../../types";
+import { NativeTokenDetail, TokenDetail } from "../../types";
+import { ZERO_BIG_NUMBER } from "../../config";
 
 export interface ITokensSliceState {
 	fromTokensList: Array<TokenDetail>;
 	toTokensList: Array<TokenDetail>;
 	inputToken: TokenDetail;
 	outputToken: TokenDetail;
+	nativeToken: NativeTokenDetail;
 }
 
 const initTokenDetail: TokenDetail = {
@@ -23,6 +25,11 @@ const initialState: ITokensSliceState = {
 	outputToken: initTokenDetail,
 	fromTokensList: [],
 	toTokensList: [],
+	nativeToken: {
+		name: "",
+		price: ZERO_BIG_NUMBER,
+		address: "",
+	},
 };
 
 export const tokensSlice = createSlice({
@@ -44,6 +51,9 @@ export const tokensSlice = createSlice({
 		setOutputToken: (state, action: PayloadAction<TokenDetail>) => {
 			state.outputToken = action.payload;
 		},
+		setNativeToken: (state, action: PayloadAction<NativeTokenDetail>) => {
+			state.nativeToken = action.payload;
+		},
 	},
 });
 
@@ -53,6 +63,7 @@ export const {
 	setToTokensList,
 	setInputToken,
 	setOutputToken,
+	setNativeToken,
 } = tokensSlice.actions;
 
 export default tokensSlice.reducer;

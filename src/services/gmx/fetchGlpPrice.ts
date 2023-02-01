@@ -1,13 +1,11 @@
 import { ethers } from "ethers";
-import { abis, CONTRACTS, getRpcUrl, USD_DECIMALS } from "../../config";
-import { formatAmount } from "../../helpers";
+import { abis, CONTRACTS, getRpcUrl } from "../../config";
 
 type Props = {
-	userAddress?: string;
 	chainId: number;
 };
 
-const getGlpStats = async ({ chainId }: Props) => {
+const getGlpPrice = async ({ chainId }: Props) => {
 	const rpcUrl = getRpcUrl(chainId);
 	const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 	const glpManagerContract = new ethers.Contract(
@@ -17,8 +15,8 @@ const getGlpStats = async ({ chainId }: Props) => {
 	);
 
 	const glpPrice = await glpManagerContract.getPrice(true);
-	const glpPriceUsd = formatAmount(glpPrice, USD_DECIMALS, 3, true);
-	return { glpPrice: glpPriceUsd };
+
+	return { glpPrice };
 };
 
-export default getGlpStats;
+export default getGlpPrice;

@@ -1,18 +1,97 @@
-import React, { useEffect } from "react";
+import { BigNumber } from "ethers";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { useAccount } from "wagmi";
+import {
+	GLP_DECIMALS,
+	NATIVE_TOKEN,
+	PLACEHOLDER_ACCOUNT,
+	USD_DECIMALS,
+	ZERO_BIG_NUMBER,
+} from "../../config";
+import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setGlpPrice } from "../../redux";
-import { getGlpStats } from "../../services";
+import {
+	setApr,
+	setGlpPrice,
+	setStakedBalance,
+	setTotalSupply,
+	setWalletBalance,
+} from "../../redux";
+import {
+	getGlpBalance,
+	getGlpPrice,
+	getGlpTrackerApr,
+	getGlpSupply,
+} from "../../services";
 
 const GlpStats = () => {
 	const dispatch = useAppDispatch();
+	const { address } = useAccount();
 	const { outputChainId } = useAppSelector((state) => state.chains);
-	const { glpPrice } = useAppSelector((state) => state.glp);
+	const { glpPrice, totalSupply, walletBalance, stakedBalance, apr } =
+		useAppSelector((state) => state.glp);
+	const { nativeToken } = useAppSelector((state) => state.tokens);
 
-	const glpStatsResponse = useQuery(
-		["glpStats", outputChainId],
+	const [glpTotalSupplyUsd, setGlpTotalSupplyUsd] =
+		useState<BigNumber>(ZERO_BIG_NUMBER);
+	const [glpWalletBalanceUsd, setGlpWalletBalanceUsd] =
+		useState<BigNumber>(ZERO_BIG_NUMBER);
+
+	const glpTrackerAprResponse = useQuery(
+		["glpTrackerApr", outputChainId, address, glpPrice, nativeToken],
 		() =>
-			getGlpStats({
+			getGlpTrackerApr({
+				chainId: outputChainId,
+				userAddress: address || PLACEHOLDER_ACCOUNT,
+				glpPrice: glpPrice,
+				nativeToken: nativeToken,
+			}),
+		{
+			enabled: !!(
+				outputChainId &&
+				glpPrice !== ZERO_BIG_NUMBER &&
+				nativeToken.price !== ZERO_BIG_NUMBER
+			),
+			refetchOnWindowFocus: false,
+			refetchInterval: 10000,
+			refetchIntervalInBackground: true,
+		}
+	);
+
+	const glpPriceResponse = useQuery(
+		["glpPrice", outputChainId],
+		() =>
+			getGlpPrice({
+				chainId: outputChainId,
+			}),
+		{
+			enabled: !!outputChainId,
+			refetchOnWindowFocus: false,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
+		}
+	);
+
+	const glpBalanceResponse = useQuery(
+		["glpBalance", outputChainId, address],
+		() =>
+			getGlpBalance({
+				chainId: outputChainId,
+				userAddress: address || PLACEHOLDER_ACCOUNT,
+			}),
+		{
+			enabled: !!outputChainId,
+			refetchOnWindowFocus: false,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
+		}
+	);
+
+	const glpSupplyResponse = useQuery(
+		["glpSupply", outputChainId],
+		() =>
+			getGlpSupply({
 				chainId: outputChainId,
 			}),
 		{
@@ -24,10 +103,48 @@ const GlpStats = () => {
 	);
 
 	useEffect(() => {
-		if (!glpStatsResponse.isSuccess) return;
-		const glpPrice = glpStatsResponse.data?.glpPrice;
+		if (!glpPriceResponse.isSuccess) return;
+		const { glpPrice } = glpPriceResponse.data;
+
 		dispatch(setGlpPrice(glpPrice));
-	}, [glpStatsResponse.isSuccess, outputChainId]);
+	}, [glpPriceResponse.isSuccess, outputChainId]);
+
+	useEffect(() => {
+		if (!glpBalanceResponse.isSuccess || glpPrice === ZERO_BIG_NUMBER)
+			return;
+		const { glpWalletBalance } = glpBalanceResponse.data;
+		const glpWalletBalanceUSD = glpWalletBalance
+			.mul(glpPrice)
+			.div(expandDecimals(1, GLP_DECIMALS));
+
+		setGlpWalletBalanceUsd(glpWalletBalanceUSD);
+		dispatch(setWalletBalance(glpWalletBalance));
+		dispatch(setStakedBalance(glpWalletBalance));
+	}, [glpBalanceResponse.isSuccess, outputChainId, glpPrice]);
+
+	useEffect(() => {
+		if (!glpSupplyResponse.isSuccess || glpPrice === ZERO_BIG_NUMBER)
+			return;
+		const { totalSupply } = glpSupplyResponse.data;
+		const totalSupplyUSD = totalSupply
+			.mul(glpPrice)
+			.div(expandDecimals(1, GLP_DECIMALS));
+
+		setGlpTotalSupplyUsd(totalSupplyUSD);
+		dispatch(setTotalSupply(totalSupply));
+	}, [glpSupplyResponse.isSuccess, outputChainId, glpPrice]);
+
+	useEffect(() => {
+		if (
+			!glpTrackerAprResponse.isSuccess ||
+			glpPrice === ZERO_BIG_NUMBER ||
+			nativeToken.price === ZERO_BIG_NUMBER
+		)
+			return;
+		const { feeGlpTrackerApr } = glpTrackerAprResponse.data;
+
+		dispatch(setApr(feeGlpTrackerApr));
+	}, [glpTrackerAprResponse.isSuccess, outputChainId, glpPrice, nativeToken]);
 
 	return (
 		<>
@@ -54,7 +171,7 @@ const GlpStats = () => {
 							Price
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							${glpPrice}
+							${formatAmount(glpPrice, USD_DECIMALS, 3, true)}
 						</div>
 					</div>
 					<div className="w-full flex justify-between pb-1">
@@ -62,7 +179,15 @@ const GlpStats = () => {
 							Wallet
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							0.0000 GLP ($0.00)
+							{formatAmount(walletBalance, GLP_DECIMALS, 4, true)}{" "}
+							GLP ($
+							{formatAmount(
+								glpWalletBalanceUsd,
+								USD_DECIMALS,
+								2,
+								true
+							)}
+							)
 						</div>
 					</div>
 					<div className="w-full flex justify-between">
@@ -70,17 +195,27 @@ const GlpStats = () => {
 							Staked
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							0.0000 GLP ($0.00)
+							{formatAmount(stakedBalance, GLP_DECIMALS, 4, true)}{" "}
+							GLP ($
+							{formatAmount(
+								glpWalletBalanceUsd,
+								USD_DECIMALS,
+								2,
+								true
+							)}
+							)
 						</div>
 					</div>
 				</div>
 				<div className="p-4">
 					<div className="w-full flex justify-between pb-1">
 						<div className="text-base text-zinc-400 font-medium">
+							{outputChainId !== 0 &&
+								NATIVE_TOKEN[outputChainId]["name"]}{" "}
 							APR
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							19.51%
+							{formatAmount(apr, 2, 2, false)}%
 						</div>
 					</div>
 					<div className="w-full flex justify-between pb-1">
@@ -88,7 +223,15 @@ const GlpStats = () => {
 							Total Supply
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							435,027,592.6820 GLP ($408,982,348.22)
+							{formatAmount(totalSupply, GLP_DECIMALS, 4, true)}{" "}
+							($
+							{formatAmount(
+								glpTotalSupplyUsd,
+								USD_DECIMALS,
+								2,
+								true
+							)}
+							)
 						</div>
 					</div>
 				</div>

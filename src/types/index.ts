@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 export type ChainDetail = {
 	chainId: number;
 	name: string;
@@ -16,6 +18,12 @@ export type TokenDetail = {
 	name: string;
 	decimals: number;
 	chainId: number;
+};
+
+export type NativeTokenDetail = {
+	name: string;
+	price: BigNumber;
+	address: string;
 };
 
 export type Obj = {

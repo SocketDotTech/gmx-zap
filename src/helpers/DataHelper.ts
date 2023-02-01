@@ -1,7 +1,9 @@
+import { BigNumber } from "ethers";
 import {
 	glpSupportedTokens,
 	supportedInputChains,
 	supportedOutputChains,
+	USD_DECIMALS,
 } from "../config";
 import {
 	ChainDetail,
@@ -9,6 +11,7 @@ import {
 	queryResponseObj,
 	TokenDetail,
 } from "../types";
+import { expandDecimals } from "./numbers";
 
 export const getChainDataByChainId = (
 	chains: any
@@ -75,4 +78,18 @@ export const getToTokensListFromResponse = (
 	const outputToken: TokenDetail = tokenList[0];
 
 	return { toTokensList: tokenList, outputTokenInfo: outputToken };
+};
+
+export const getTokenPriceFromResponse = (
+	tokenPrice: queryResponseObj
+): {
+	tokenPriceBN: BigNumber;
+} => {
+	const data: any = tokenPrice.data?.data?.result.tokenPrice.toString();
+	const integerPrice = data.split(".")[0];
+	const tokenPriceBN: BigNumber = BigNumber.from(integerPrice).mul(
+		expandDecimals(1, USD_DECIMALS)
+	);
+
+	return { tokenPriceBN };
 };

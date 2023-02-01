@@ -1,40 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { TokenDetail } from "../../types";
+import { BigNumber } from "ethers";
+import { ZERO_BIG_NUMBER } from "../../config";
 
 export interface IGlpSliceState {
-	glpPrice: string;
-	walletBalance: number;
-	stakedBalance: number;
-	apr: number;
-	totalSupply: number;
+	glpPrice: BigNumber;
+	walletBalance: BigNumber;
+	stakedBalance: BigNumber;
+	apr: BigNumber;
+	totalSupply: BigNumber;
 }
 
 const initialState: IGlpSliceState = {
-	glpPrice: "0.00",
-	walletBalance: 0,
-	stakedBalance: 0,
-	apr: 0,
-	totalSupply: 0,
+	glpPrice: ZERO_BIG_NUMBER,
+	walletBalance: ZERO_BIG_NUMBER,
+	stakedBalance: ZERO_BIG_NUMBER,
+	apr: ZERO_BIG_NUMBER,
+	totalSupply: ZERO_BIG_NUMBER,
 };
 
 export const glpSlice = createSlice({
 	name: "chains",
 	initialState,
 	reducers: {
-		setGlpPrice: (state, action: PayloadAction<string>) => {
+		setGlpPrice: (state, action: PayloadAction<BigNumber>) => {
 			state.glpPrice = action.payload;
 		},
-		setWalletBalance: (state, action: PayloadAction<number>) => {
+		setWalletBalance: (state, action: PayloadAction<BigNumber>) => {
 			state.walletBalance = action.payload;
 		},
-		setStakedBalance: (state, action: PayloadAction<number>) => {
+		setStakedBalance: (state, action: PayloadAction<BigNumber>) => {
 			state.stakedBalance = action.payload;
 		},
-		setApr: (state, action: PayloadAction<number>) => {
+		setApr: (state, action: PayloadAction<BigNumber>) => {
 			state.apr = action.payload;
 		},
-		setTotalSupply: (state, action: PayloadAction<number>) => {
+		setTotalSupply: (state, action: PayloadAction<BigNumber>) => {
 			state.totalSupply = action.payload;
 		},
 	},
