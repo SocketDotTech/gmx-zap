@@ -3,8 +3,7 @@ import React, { useState } from "react";
 export const ReceiveGlpDetail = () => {
 	const [outputTokenAmount, setOutputTokenAmount] = useState("");
 
-	const amount = 156,
-		balance = 0.0;
+	const amount = 0;
 	return (
 		<div
 			id="receive-glp"

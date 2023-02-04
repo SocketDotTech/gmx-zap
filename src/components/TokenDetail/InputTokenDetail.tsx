@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
+import { isValidInput } from "../../helpers";
 import { getUserBalanceOfChainId } from "../../helpers/DataHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setInputToken, setInputTokenBalance } from "../../redux";
@@ -103,7 +104,8 @@ export const InputTokenDetail = () => {
 						placeholder="0"
 						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none"
 						onChange={(e) => {
-							setInputTokenAmount(e.target.value);
+							if (isValidInput(e.target.value))
+								setInputTokenAmount(e.target.value);
 						}}
 						value={inputTokenAmount}
 					/>

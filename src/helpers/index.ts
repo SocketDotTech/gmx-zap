@@ -14,4 +14,14 @@ export const swapChainsCompatible = (
 	return false;
 };
 
+const regExp = new RegExp(/^\d*\.?\d*$/);
+
+export const isValidInput = (ch: any) => {
+	if (regExp.test(ch)) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
 export * from "./numbers";
