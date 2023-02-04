@@ -4,25 +4,40 @@ import { useAccount } from "wagmi";
 import { isValidInput } from "../../helpers";
 import { getUserBalanceOfChainId } from "../../helpers/DataHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setInputToken, setInputTokenBalance } from "../../redux";
+import {
+	setInputToken,
+	setInputTokenAmount,
+	setInputTokenBalance,
+} from "../../redux";
 import {
 	getTokenPriceByTokenAddress,
 	getUserTokenBalances,
 } from "../../services";
 import { queryResponseObj } from "../../types";
 import { InputTokenSelectDropdown } from "../Dropdown";
+import { useDebouncedCallback } from "use-debounce";
+
+const DEBOUNCE_TIMEOUT = 1500;
 
 export const InputTokenDetail = () => {
 	const dispatch = useAppDispatch();
 	const { address } = useAccount();
 
 	const [hideInputTokenDropdown, setHideInputTokenDropdown] = useState(true);
-	const [inputTokenAmount, setInputTokenAmount] = useState("");
+	const [inputTokenAmountField, setInputTokenAmountField] = useState("");
 	const [inputTokenPrice, setInputTokenPrice] = useState(0);
 	const { inputToken, fromTokensList, inputTokenBalance } = useAppSelector(
 		(state) => state.tokens
 	);
 	const { inputChainId } = useAppSelector((state) => state.chains);
+
+	// debounce set inputTokenAmount in redux
+	const debouncedDispatchTokenAmount = useDebouncedCallback(
+		(value: string) => {
+			dispatch(setInputTokenAmount(value));
+		},
+		DEBOUNCE_TIMEOUT
+	);
 
 	const inputTokenPriceResponse: queryResponseObj = useQuery(
 		["inputTokenPrice", inputToken],
@@ -83,10 +98,11 @@ export const InputTokenDetail = () => {
 			<div className="flex space-between pb-3">
 				<div className="grow text-base text-zinc-400 font-medium mr-2">
 					Pay: $
-					{inputTokenAmount === ""
+					{inputTokenAmountField === ""
 						? "0"
 						: (
-								parseFloat(inputTokenAmount) * inputTokenPrice
+								parseFloat(inputTokenAmountField) *
+								inputTokenPrice
 						  ).toLocaleString()}
 				</div>
 				<div className="text-base text-zinc-400 font-medium text-right">
@@ -104,10 +120,12 @@ export const InputTokenDetail = () => {
 						placeholder="0"
 						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none"
 						onChange={(e) => {
-							if (isValidInput(e.target.value))
-								setInputTokenAmount(e.target.value);
+							if (isValidInput(e.target.value)) {
+								setInputTokenAmountField(e.target.value);
+								debouncedDispatchTokenAmount(e.target.value);
+							}
 						}}
-						value={inputTokenAmount}
+						value={inputTokenAmountField}
 					/>
 				</div>
 				<div

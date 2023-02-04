@@ -130,19 +130,6 @@ export const TokensDetail = () => {
 			<OutputTokenDetail />
 			<div className="pb-3"></div>
 			<ReceiveGlpDetail />
-			<div className="pb-3"></div>
-			<div className="flex justify-between">
-				<div className="grow text-sm text-zinc-400 font-medium mr-2">
-					Fees
-				</div>
-				<div className="text-sm text-white font-medium text-right">
-					0.02%
-				</div>
-			</div>
-			<div className="pb-1"></div>
-			<button className="p-3 text-white text-base font-semibold w-full rounded bg-[#2E3FD9]">
-				Proceed
-			</button>
 		</div>
 	);
 };

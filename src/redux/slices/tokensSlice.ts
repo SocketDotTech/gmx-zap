@@ -10,6 +10,7 @@ export interface ITokensSliceState {
 	outputToken: TokenDetail;
 	nativeToken: NativeTokenDetail;
 	inputTokenBalance: number;
+	inputTokenAmount: string;
 }
 
 const initTokenDetail: TokenDetail = {
@@ -32,6 +33,7 @@ const initialState: ITokensSliceState = {
 		address: "",
 	},
 	inputTokenBalance: 0,
+	inputTokenAmount: "",
 };
 
 export const tokensSlice = createSlice({
@@ -59,6 +61,9 @@ export const tokensSlice = createSlice({
 		setInputTokenBalance: (state, action: PayloadAction<number>) => {
 			state.inputTokenBalance = action.payload;
 		},
+		setInputTokenAmount: (state, action: PayloadAction<string>) => {
+			state.inputTokenAmount = action.payload;
+		},
 	},
 });
 
@@ -70,6 +75,7 @@ export const {
 	setOutputToken,
 	setNativeToken,
 	setInputTokenBalance,
+	setInputTokenAmount,
 } = tokensSlice.actions;
 
 export default tokensSlice.reducer;
