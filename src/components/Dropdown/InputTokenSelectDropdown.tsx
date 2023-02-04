@@ -5,6 +5,7 @@ import { getIfTokenSupported, getUserTokenBalances } from "../../services";
 import { ethers } from "ethers";
 import { queryResponseObj, TokenDetail } from "../../types";
 import { useAccount } from "wagmi";
+import { getUserBalanceOfChainId } from "../../helpers/DataHelper";
 
 type Props = {
 	options: Array<{
@@ -18,23 +19,6 @@ type Props = {
 	chainId: number;
 	setTokenDetail: ({ address, symbol, icon }: TokenDetail) => void;
 	onHide: (value: boolean) => void;
-};
-
-interface Obj {
-	[key: string]: any;
-}
-
-const getUserBalanceOfChainId = (balances: any, chainId: number) => {
-	if (!balances.isSuccess) return {};
-
-	const data = balances.data?.data?.result;
-	const balanceByChainId: Obj = {};
-	data.map((balance: any) => {
-		if (balance.chainId == chainId) {
-			balanceByChainId[balance.address] = balance.amount;
-		}
-	});
-	return balanceByChainId;
 };
 
 const InputTokenSelectDropdown = ({

@@ -8,6 +8,7 @@ import {
 import {
 	ChainDetail,
 	ChainsDetailObj,
+	Obj,
 	queryResponseObj,
 	TokenDetail,
 } from "../types";
@@ -78,6 +79,22 @@ export const getToTokensListFromResponse = (
 	const outputToken: TokenDetail = tokenList[0];
 
 	return { toTokensList: tokenList, outputTokenInfo: outputToken };
+};
+
+export const getUserBalanceOfChainId = (
+	balances: any,
+	chainId: number
+): any => {
+	if (!balances.isSuccess) return {};
+
+	const data = balances.data?.data?.result;
+	const balanceByChainId: Obj = {};
+	data.map((balance: any) => {
+		if (balance.chainId == chainId) {
+			balanceByChainId[balance.address] = balance.amount;
+		}
+	});
+	return balanceByChainId;
 };
 
 export const getTokenPriceFromResponse = (

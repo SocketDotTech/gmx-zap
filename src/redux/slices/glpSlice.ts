@@ -20,7 +20,7 @@ const initialState: IGlpSliceState = {
 };
 
 export const glpSlice = createSlice({
-	name: "chains",
+	name: "glp",
 	initialState,
 	reducers: {
 		setGlpPrice: (state, action: PayloadAction<BigNumber>) => {

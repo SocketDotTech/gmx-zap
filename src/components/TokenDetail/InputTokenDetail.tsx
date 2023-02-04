@@ -1,20 +1,78 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { useAccount } from "wagmi";
+import { getUserBalanceOfChainId } from "../../helpers/DataHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setInputToken } from "../../redux";
+import { setInputToken, setInputTokenBalance } from "../../redux";
+import {
+	getTokenPriceByTokenAddress,
+	getUserTokenBalances,
+} from "../../services";
+import { queryResponseObj } from "../../types";
 import { InputTokenSelectDropdown } from "../Dropdown";
 
 export const InputTokenDetail = () => {
 	const dispatch = useAppDispatch();
+	const { address } = useAccount();
 
 	const [hideInputTokenDropdown, setHideInputTokenDropdown] = useState(true);
 	const [inputTokenAmount, setInputTokenAmount] = useState("");
-	const { inputToken, fromTokensList } = useAppSelector(
+	const [inputTokenPrice, setInputTokenPrice] = useState(0);
+	const { inputToken, fromTokensList, inputTokenBalance } = useAppSelector(
 		(state) => state.tokens
 	);
 	const { inputChainId } = useAppSelector((state) => state.chains);
 
-	const amount = 156,
-		balance = 0.0;
+	const inputTokenPriceResponse: queryResponseObj = useQuery(
+		["inputTokenPrice", inputToken],
+		() =>
+			getTokenPriceByTokenAddress({
+				chainId: inputChainId.toString(),
+				tokenAddress: inputToken.address,
+			}),
+		{
+			enabled: !!(inputToken.chainId !== 0),
+			refetchOnWindowFocus: false,
+			refetchInterval: 10000,
+			refetchIntervalInBackground: true,
+		}
+	);
+
+	const balanceResponse = useQuery(
+		["userTokenBalance"],
+		() =>
+			getUserTokenBalances({
+				userAddress: address!,
+			}),
+		{
+			enabled: !!address,
+		}
+	);
+
+	useEffect(() => {
+		if (
+			(!balanceResponse.isSuccess || inputToken.chainId === 0,
+			inputChainId === 0)
+		)
+			return;
+
+		const tokenBalance = getUserBalanceOfChainId(
+			balanceResponse,
+			inputChainId
+		);
+		if (!tokenBalance[inputToken.address]) return;
+		dispatch(setInputTokenBalance(tokenBalance[inputToken.address]));
+	}, [balanceResponse.isSuccess, inputToken]);
+
+	useEffect(() => {
+		if (!inputTokenPriceResponse.isSuccess || inputToken.chainId === 0)
+			return;
+
+		const price: number =
+			inputTokenPriceResponse.data?.data?.result.tokenPrice;
+		setInputTokenPrice(price);
+	}, [inputTokenPriceResponse.isSuccess, inputToken]);
+
 	return (
 		<div
 			id="input-token-select"
@@ -23,10 +81,20 @@ export const InputTokenDetail = () => {
 			{/* Pay - Balance */}
 			<div className="flex space-between pb-3">
 				<div className="grow text-base text-zinc-400 font-medium mr-2">
-					Pay: ${amount}
+					Pay: $
+					{inputTokenAmount === ""
+						? "0"
+						: (
+								parseFloat(inputTokenAmount) * inputTokenPrice
+						  ).toLocaleString()}
 				</div>
 				<div className="text-base text-zinc-400 font-medium text-right">
-					Balance: <span className="text-white">{balance}</span>
+					Balance:{" "}
+					<span className="text-white">
+						{inputTokenBalance
+							? inputTokenBalance.toFixed(4)
+							: "0.00"}
+					</span>
 				</div>
 			</div>
 			<div className="flex space-between">

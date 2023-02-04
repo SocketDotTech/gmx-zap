@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 import {
+	AVALANCHE,
 	GLP_DECIMALS,
 	NATIVE_TOKEN,
 	PLACEHOLDER_ACCOUNT,
@@ -152,7 +153,11 @@ const GlpStats = () => {
 			<div className="max-w-[44.5rem] bg-[#17192E] w-full mr-4 rounded divide-y divide-[#23263b] border border-[#23263b] max-[900px]:min-w-full max-[900px]:mb-7">
 				<div className="flex p-4">
 					<img
-						src={"assets/ic_glp_arbitrum.svg"}
+						src={`assets/${
+							outputChainId == AVALANCHE
+								? "ic_glp_avax.svg"
+								: "ic_glp_arbitrum.svg"
+						}`}
 						alt="IC Glp Logo"
 						className="w-10 h-10"
 					/>
@@ -161,7 +166,7 @@ const GlpStats = () => {
 							GLP
 						</div>
 						<div className="text-xs text-zinc-500 font-medium">
-							ARBI
+							{outputChainId == AVALANCHE ? "AVAX" : "ARBI"}
 						</div>
 					</div>
 				</div>
