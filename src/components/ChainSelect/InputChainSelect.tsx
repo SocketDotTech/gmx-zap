@@ -30,7 +30,13 @@ export const InputChainSelect: React.FC = () => {
 						{chainsInfo ? (
 							<div className="flex flex-row items-center">
 								{inputChainId === 0 ? (
-									"Loading..."
+									<>
+										<img
+											src="assets/loading.svg"
+											className="inline animate-spin mr-2 h-5 w-5 text-white"
+										/>{" "}
+										Loading...
+									</>
 								) : (
 									<>
 										<img
@@ -47,7 +53,7 @@ export const InputChainSelect: React.FC = () => {
 							<div>
 								<img
 									src="assets/loading.svg"
-									className="inline animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+									className="inline animate-spin mr-2 h-5 w-5 text-white"
 								/>{" "}
 								Loading...
 							</div>

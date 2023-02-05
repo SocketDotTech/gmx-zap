@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 import { useAppSelector } from "../../hooks";
 import { getQuote } from "../../services";
-import { queryResponseObj } from "../../types";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
 
@@ -85,7 +84,13 @@ const GlpBuyWidget = () => {
 				{quoteListResponse.isLoading && (
 					<>
 						<div className="text-sm font-medium text-white">
-							Loading...
+							<div className="flex justify-between">
+								<div className="grow mr-2">Loading...</div>
+								<img
+									src="assets/loading.svg"
+									className="inline animate-spin mr-2 h-3 w-3 text-white"
+								/>{" "}
+							</div>
 						</div>
 						<div className="pb-1"></div>
 					</>

@@ -38,7 +38,10 @@ export const OutputTokenDetail = () => {
 						<>
 							{/* <img src={chainsByChainId[outputChainId].currency.icon} className="w-4 h-4 rounded-full mr-1 self-center" /> */}
 							<div className="mr-2">
-								{/* <LoadingSvg className="inline animate-spin -ml-1 mr-2 h-5 w-5 text-textColorPrimary" />{" "} */}
+								<img
+									src="assets/loading.svg"
+									className="inline animate-spin mr-2 h-5 w-5 text-white"
+								/>{" "}
 								Loading...
 							</div>
 							<div className="self-center">
