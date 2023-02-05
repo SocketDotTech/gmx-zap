@@ -85,7 +85,9 @@ const GlpBuyWidget = () => {
 					<>
 						<div className="text-sm font-medium text-white">
 							<div className="flex justify-between">
-								<div className="grow mr-2">Loading...</div>
+								<div className="grow mr-2">
+									Fetching Route...
+								</div>
 								<img
 									src="assets/loading.svg"
 									className="inline animate-spin mr-2 h-3 w-3 text-white"

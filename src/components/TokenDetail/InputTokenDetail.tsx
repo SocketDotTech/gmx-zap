@@ -118,7 +118,7 @@ export const InputTokenDetail = () => {
 				<div className="grow text-white mr-2">
 					<input
 						placeholder="0"
-						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none"
+						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none mr-2"
 						onChange={(e) => {
 							if (isValidInput(e.target.value)) {
 								setInputTokenAmountField(e.target.value);

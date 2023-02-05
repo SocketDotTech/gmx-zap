@@ -4,7 +4,7 @@ import GlpStats from "../../components/GlpStats";
 
 const Home = () => {
 	return (
-		<div className="max-w-screen-xl py-16 px-8 m-auto flex flex-col">
+		<div className="max-w-screen-xl py-10 sm:py-16 px-5 sm:px-8 m-auto flex flex-col">
 			{/* Buy GLP heading */}
 			<div className="mb-7">
 				<div className="text-4xl font-medium text-white pb-2">

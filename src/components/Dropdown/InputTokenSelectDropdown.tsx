@@ -117,7 +117,7 @@ const InputTokenSelectDropdown = ({
 			<div className="flex m-1 flex-col">
 				<div className="w-full p-2.5">
 					<input
-						className="rounded-lg bg-bgColorSecondary hover:bg-bgColorPrimary p-2 w-full outline-none border-none"
+						className="rounded-lg bg-[#17192E] p-2 w-full outline-none border-none"
 						placeholder="Search Name or Address"
 						onChange={(e) => {
 							if (isAddress) setIsAddress(false);

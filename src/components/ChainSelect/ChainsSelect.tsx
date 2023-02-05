@@ -15,7 +15,6 @@ import {
 import { getSupportedChains } from "../../services";
 
 const ChainsSelect: React.FC = () => {
-	const widgetWidth = 460;
 	const dispatch = useAppDispatch();
 	const chainsResponse = useQuery(["chains"], getSupportedChains, {
 		refetchOnWindowFocus: false,
@@ -54,31 +53,31 @@ const ChainsSelect: React.FC = () => {
 	return (
 		<div
 			id="chain-select"
-			className={`${
-				widgetWidth > 450 ? "grid grid-cols-11" : "flex flex-col"
-			} gap-3 rounded-xl`}
+			className={`${"sm:grid sm:grid-cols-11 flex flex-col"} gap-3 rounded-xl`}
 		>
 			<InputChainSelect />
-			{widgetWidth > 450 && (
-				<div id="swap-chains" className="self-center text-white">
-					<div
-						className={`flex justify-center items-center h-7 ${
-							!swapEnable
-								? "hover:cursor-not-allowed"
-								: "hover:cursor-pointer"
-						}`}
-						onClick={() => {
-							if (!swapEnable) return;
-							dispatch(setInputChainId(outputChainId));
-						}}
-					>
-						<img
-							src={"assets/ic_convert_down.svg"}
-							className="-rotate-90"
-						/>
-					</div>
+			<div
+				id="swap-chains"
+				className="self-center text-white hidden sm:block"
+			>
+				<div
+					className={`flex justify-center items-center h-7 ${
+						!swapEnable
+							? "hover:cursor-not-allowed"
+							: "hover:cursor-pointer"
+					}`}
+					onClick={() => {
+						if (!swapEnable) return;
+						dispatch(setInputChainId(outputChainId));
+					}}
+				>
+					<img
+						src={"assets/ic_convert_down.svg"}
+						className="-rotate-90"
+					/>
 				</div>
-			)}
+			</div>
+
 			<OutputChainSelect />
 		</div>
 	);
