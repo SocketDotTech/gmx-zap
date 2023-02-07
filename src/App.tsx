@@ -17,7 +17,8 @@ import {
 	gnosis,
 	avalanche,
 	fantom,
-} from "wagmi/chains";
+	aurora,
+} from "@wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -27,7 +28,17 @@ import Home from "./pages/Home";
 const queryClient = new QueryClient();
 
 const { chains, provider } = configureChains(
-	[mainnet, polygon, optimism, arbitrum, avalanche, bsc, gnosis, fantom],
+	[
+		mainnet,
+		polygon,
+		optimism,
+		arbitrum,
+		avalanche,
+		bsc,
+		gnosis,
+		fantom,
+		aurora as any,
+	],
 	[
 		alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID! }),
 		publicProvider(),
