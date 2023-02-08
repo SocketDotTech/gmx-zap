@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE } from "./contracts";
+import { ARBITRUM, AVALANCHE } from "./chains";
 
 export const RPC_PROVIDERS: {
 	[x: number]: string;

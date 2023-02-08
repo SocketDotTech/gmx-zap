@@ -31,6 +31,7 @@ const initialState: ITokensSliceState = {
 		name: "",
 		price: ZERO_BIG_NUMBER,
 		address: "",
+		symbol: "",
 	},
 	inputTokenBalance: 0,
 	inputTokenAmount: "",

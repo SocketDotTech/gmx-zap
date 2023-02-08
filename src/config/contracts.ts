@@ -1,5 +1,4 @@
-export const AVALANCHE = 43114;
-export const ARBITRUM = 42161;
+import { ARBITRUM, AVALANCHE } from "./chains";
 
 export const CONTRACTS: {
 	[x: number]: {

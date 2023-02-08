@@ -24,7 +24,7 @@ import { InputTokenDetail } from "./InputTokenDetail";
 import { OutputTokenDetail } from "./OutputTokenDetail";
 import { ReceiveGlpDetail } from "./ReceiveGlpDetail";
 
-export const TokensDetail = () => {
+export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 	const dispatch = useAppDispatch();
 
 	const { inputChainId, outputChainId } = useAppSelector(
@@ -83,6 +83,7 @@ export const TokensDetail = () => {
 		const nativeTokenDetail: NativeTokenDetail = {
 			name: NATIVE_TOKEN[outputChainId]["name"],
 			price: tokenPriceBN,
+			symbol: NATIVE_TOKEN[outputChainId]["symbol"],
 			address: NATIVE_TOKEN[outputChainId]["address"],
 		};
 
@@ -129,7 +130,7 @@ export const TokensDetail = () => {
 			<div className="pb-3"></div>
 			<OutputTokenDetail />
 			<div className="pb-3"></div>
-			<ReceiveGlpDetail />
+			<ReceiveGlpDetail glpReceived={glpReceived} />
 		</div>
 	);
 };

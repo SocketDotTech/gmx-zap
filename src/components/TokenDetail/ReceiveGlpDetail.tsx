@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { USD_DECIMALS } from "../../config";
+import { formatAmount } from "../../helpers";
+import { useAppSelector } from "../../hooks";
 
-export const ReceiveGlpDetail = () => {
+export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 	const [outputTokenAmount, setOutputTokenAmount] = useState("");
+	const { glpPrice } = useAppSelector((state) => state.glp);
 
 	const amount = 0;
 	return (
@@ -12,7 +16,22 @@ export const ReceiveGlpDetail = () => {
 			{/* Pay - Balance */}
 			<div className="flex pb-3">
 				<div className="grow text-base text-zinc-400 font-medium mr-2">
-					Receive: ${amount}
+					Receive: $
+					{glpReceived === ""
+						? "0"
+						: (
+								parseFloat(glpReceived) *
+								parseFloat(
+									formatAmount(
+										glpPrice,
+										USD_DECIMALS,
+										10,
+										true
+									)
+								)
+						  )
+								.toFixed(2)
+								.toLocaleString()}
 				</div>
 			</div>
 			<div className="flex space-between">
@@ -24,7 +43,11 @@ export const ReceiveGlpDetail = () => {
 							setOutputTokenAmount(e.target.value);
 						}}
 						disabled
-						value={outputTokenAmount}
+						value={
+							glpReceived === ""
+								? "0"
+								: parseFloat(glpReceived).toString()
+						}
 					/>
 				</div>
 				<div className="text-xl font-medium text-right flex">GLP</div>

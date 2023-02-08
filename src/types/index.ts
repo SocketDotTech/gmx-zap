@@ -24,6 +24,7 @@ export type NativeTokenDetail = {
 	name: string;
 	price: BigNumber;
 	address: string;
+	symbol: string;
 };
 
 export type Obj = {

@@ -1,6 +1,13 @@
+import { BigNumber } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
+import {
+	BASIS_POINTS_DIVISOR,
+	DEFAULT_SLIPPAGE_AMOUNT,
+	USD_DECIMALS,
+} from "../../config";
+import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppSelector } from "../../hooks";
 import { getQuote } from "../../services";
 import { ChainsSelect } from "../ChainSelect";
@@ -11,10 +18,14 @@ const GlpBuyWidget = () => {
 	const { inputToken, inputTokenAmount, outputToken } = useAppSelector(
 		(state) => state.tokens
 	);
+	const { glpPrice } = useAppSelector((state) => state.glp);
 	const { inputChainId, outputChainId } = useAppSelector(
 		(state) => state.chains
 	);
 	const [route, setRoute] = useState<any>({});
+	const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
+	const [proceedBtnText, setProceedBtnTest] = useState<string>("Proceed");
+	const [minGlpReceived, setMinGlpReceived] = useState<string>("");
 
 	const quoteListResponse: any = useQuery(
 		[
@@ -55,6 +66,48 @@ const GlpBuyWidget = () => {
 		}
 	);
 
+	const balance = "100";
+
+	useEffect(() => {
+		if (!address) {
+			setProceedBtnTest("Connect Wallet");
+			setProceedBtnDisabled(true);
+		} else if ((parseFloat(inputTokenAmount) || 0) == 0) {
+			setProceedBtnTest("Enter Input Token Amount");
+			setProceedBtnDisabled(true);
+		} else if (quoteListResponse.isLoading) {
+			setProceedBtnTest("Fetching Route...");
+			setProceedBtnDisabled(true);
+		} else if (
+			(parseFloat(inputTokenAmount) || 0) > (parseFloat(balance) || 0)
+		) {
+			setProceedBtnTest("Not Enough Balance");
+			setProceedBtnDisabled(true);
+		} else if (
+			quoteListResponse.isSuccess &&
+			Object.keys(route).length !== 0
+		) {
+			setProceedBtnTest("Proceed");
+			setProceedBtnDisabled(false);
+		} else if (
+			quoteListResponse.isSuccess &&
+			Object.keys(route).length === 0
+		) {
+			setProceedBtnTest("No Routes Available");
+			setProceedBtnDisabled(true);
+		} else {
+			setProceedBtnTest("Loading...");
+			setProceedBtnDisabled(true);
+		}
+	}, [
+		address,
+		inputTokenAmount,
+		quoteListResponse.isLoading,
+		balance,
+		quoteListResponse.isSuccess,
+		route,
+	]);
+
 	useEffect(() => {
 		if (!quoteListResponse.isSuccess) return;
 		if (inputTokenAmount === "") {
@@ -70,6 +123,34 @@ const GlpBuyWidget = () => {
 		setRoute(route);
 	}, [quoteListResponse.isSuccess, inputTokenAmount]);
 
+	useEffect(() => {
+		if (Object.keys(route).length === 0) {
+			if (minGlpReceived !== "") setMinGlpReceived("");
+		} else {
+			const glpPriceInUSD = formatAmount(
+				glpPrice,
+				USD_DECIMALS,
+				10,
+				true
+			);
+			let minGlpAmount = (
+				(route.receivedValueInUsd + route.totalGasFeesInUsd) /
+				parseFloat(glpPriceInUSD)
+			).toString();
+			minGlpAmount = parseFloat(minGlpAmount).toFixed(3);
+			minGlpAmount = BigNumber.from(
+				(parseFloat(minGlpAmount) * 1000).toFixed(0)
+			)
+				.mul(BASIS_POINTS_DIVISOR - DEFAULT_SLIPPAGE_AMOUNT)
+				.div(BASIS_POINTS_DIVISOR)
+				.toString();
+			// console.log(expandDecimals(minGlpAmount, 15));
+			minGlpAmount = (parseInt(minGlpAmount) / 1000).toString();
+
+			setMinGlpReceived(minGlpAmount);
+		}
+	}, [route]);
+
 	return (
 		<>
 			{/* GLP Bridge Widget */}
@@ -78,7 +159,7 @@ const GlpBuyWidget = () => {
 					<ChainsSelect />
 				</div>
 				<div>
-					<TokensDetail />
+					<TokensDetail glpReceived={minGlpReceived} />
 				</div>
 				<div className="pb-3"></div>
 				{quoteListResponse.isLoading && (
@@ -154,8 +235,15 @@ const GlpBuyWidget = () => {
 				</div>
 
 				<div className="pb-1"></div>
-				<button className="p-3 text-white text-base font-semibold w-full rounded bg-[#2E3FD9]">
-					Proceed
+				<button
+					className={`p-3 text-white text-base font-semibold w-full rounded bg-[#2E3FD9] ${
+						proceedBtnDisabled
+							? "cursor-not-allowed bg-[#5B5C68]"
+							: "cursor-pointer"
+					}`}
+					disabled={proceedBtnDisabled}
+				>
+					{proceedBtnText}
 				</button>
 			</div>
 		</>

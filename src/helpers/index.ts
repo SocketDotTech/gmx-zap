@@ -25,3 +25,4 @@ export const isValidInput = (ch: any) => {
 };
 
 export * from "./numbers";
+export * from "./gas";
