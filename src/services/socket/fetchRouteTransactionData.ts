@@ -2,12 +2,17 @@ import { RequestProps, postReq } from "../../api";
 
 type Props = {
 	route: any;
+	destinationCallData?: any;
 };
 
-const getRouteTransactionData = ({ route }: Props) => {
+const getRouteTransactionData = ({ route, destinationCallData }: Props) => {
+	let body: any = { route: route };
+	if (Object.keys(destinationCallData).length !== 0) {
+		body["destinationCallData"] = destinationCallData;
+	}
 	const obj: RequestProps = {
 		path: `/build-tx`,
-		body: { route: route },
+		body: body,
 	};
 	const response: any = postReq(obj);
 

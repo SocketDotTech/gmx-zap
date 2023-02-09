@@ -6,3 +6,6 @@ export * from "./tokensSlice";
 
 export { default as glpReducer } from "./glpSlice";
 export * from "./glpSlice";
+
+export { default as routeReducer } from "./routeSlice";
+export * from "./routeSlice";

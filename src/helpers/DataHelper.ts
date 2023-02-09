@@ -36,6 +36,7 @@ export const getChainDataByChainId = (
 				chainId: chain.chainId,
 				name: chain.name,
 				icon: chain.icon,
+				explorers: chain.explorers,
 			});
 		}
 		if (
@@ -46,6 +47,7 @@ export const getChainDataByChainId = (
 				chainId: chain.chainId,
 				name: chain.name,
 				icon: chain.icon,
+				explorers: chain.explorers,
 			});
 		}
 	});
@@ -60,7 +62,9 @@ export const getFromTokensListFromResponse = (
 } => {
 	const data: any = tokensList.data?.data?.result;
 	const tokenList: TokenDetail[] = data;
-	const inputToken: TokenDetail = tokenList[0];
+	let inputToken: TokenDetail = tokenList[0];
+
+	inputToken = tokenList.filter((token) => token.symbol == "USDC")[0];
 
 	return { fromTokensList: tokenList, inputTokenInfo: inputToken };
 };
@@ -76,7 +80,9 @@ export const getToTokensListFromResponse = (
 	const tokenList: TokenDetail[] = data.filter((token: any) =>
 		glpSupportedTokens[outputChainId].includes(token.symbol)
 	);
-	const outputToken: TokenDetail = tokenList[0];
+	let outputToken: TokenDetail = tokenList[0];
+
+	outputToken = tokenList.filter((token) => token.symbol == "USDC")[0];
 
 	return { toTokensList: tokenList, outputTokenInfo: outputToken };
 };

@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { Interface } from "ethers/lib/utils.js";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useNetwork, useSigner } from "wagmi";
 import {
 	abis,
 	BASIS_POINTS_DIVISOR,
@@ -13,35 +13,44 @@ import {
 	ZERO_BIG_NUMBER,
 } from "../../config";
 import { expandDecimals, formatAmount, getGasLimit } from "../../helpers";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { setRoute } from "../../redux";
 import { getQuote } from "../../services";
+import BridgeTokens from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
+
+let quoteListResponse: any;
 
 const GlpBuyWidget = () => {
 	const { address } = useAccount();
 	const { data: signer } = useSigner();
-	const { inputToken, inputTokenAmount, outputToken } = useAppSelector(
-		(state) => state.tokens
-	);
+	const { chain } = useNetwork();
+	const dispatch = useAppDispatch();
+	const { inputToken, inputTokenAmount, outputToken, inputTokenBalance } =
+		useAppSelector((state) => state.tokens);
 	const { glpPrice } = useAppSelector((state) => state.glp);
-	const { inputChainId, outputChainId } = useAppSelector(
+	const { inputChainId, outputChainId, chainsInfo } = useAppSelector(
 		(state) => state.chains
 	);
-	const [route, setRoute] = useState<any>({});
+	const { route } = useAppSelector((state) => state.route);
+
 	const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
 	const [proceedBtnText, setProceedBtnTest] = useState<string>("Proceed");
 	const [minGlpReceived, setMinGlpReceived] = useState<string>("");
-	const [widgetScreen, setWidgetScreen] = useState<number>(0);
+	const [tabIndex, setTabIndex] = useState<number>(0);
 	const [minGlpAmount, setMinGlpAmount] =
 		useState<BigNumber>(ZERO_BIG_NUMBER);
+	const [finalRoute, setFinalRoute] = useState<any>({});
+	const [destinationCallData, setDestinationCallData] = useState<any>({});
 
-	const quoteListResponse: any = useQuery(
+	quoteListResponse = useQuery(
 		[
 			"quoteList",
 			inputToken.address,
 			outputToken.address,
 			inputTokenAmount,
+			tabIndex,
 		],
 		() => {
 			return getQuote({
@@ -73,10 +82,9 @@ const GlpBuyWidget = () => {
 			),
 			cacheTime: 0,
 			refetchOnWindowFocus: false,
+			refetchInterval: 15000,
 		}
 	);
-
-	const balance = "100";
 
 	useEffect(() => {
 		if (!address) {
@@ -89,9 +97,12 @@ const GlpBuyWidget = () => {
 			setProceedBtnTest("Fetching Route...");
 			setProceedBtnDisabled(true);
 		} else if (
-			(parseFloat(inputTokenAmount) || 0) > (parseFloat(balance) || 0)
+			(parseFloat(inputTokenAmount) || 0) > (inputTokenBalance || 0)
 		) {
 			setProceedBtnTest("Not Enough Balance");
+			setProceedBtnDisabled(true);
+		} else if (chain!.id != inputChainId) {
+			setProceedBtnTest(`Switch to ${chainsInfo[inputChainId]["name"]}`);
 			setProceedBtnDisabled(true);
 		} else if (
 			quoteListResponse.isSuccess &&
@@ -113,15 +124,16 @@ const GlpBuyWidget = () => {
 		address,
 		inputTokenAmount,
 		quoteListResponse.isLoading,
-		balance,
+		inputTokenBalance,
 		quoteListResponse.isSuccess,
 		route,
+		chain,
 	]);
 
 	useEffect(() => {
 		if (!quoteListResponse.isSuccess) return;
 		if (inputTokenAmount === "") {
-			setRoute({});
+			dispatch(setRoute({}));
 			return;
 		}
 
@@ -130,7 +142,7 @@ const GlpBuyWidget = () => {
 		if (result?.routes.length > 0) {
 			route = result?.routes[0];
 		}
-		setRoute(route);
+		dispatch(setRoute(route));
 	}, [quoteListResponse.isSuccess, inputTokenAmount]);
 
 	useEffect(() => {
@@ -212,8 +224,13 @@ const GlpBuyWidget = () => {
 		let FINAL_ROUTE;
 		if (finalRoute.data?.result?.routes.length > 0) {
 			FINAL_ROUTE = finalRoute.data?.result?.routes[0];
+			const DESTINATION_CALLDATA =
+				finalRoute.data?.result?.destinationCallData;
 			console.log(FINAL_ROUTE);
-			setWidgetScreen(1);
+			console.log(DESTINATION_CALLDATA);
+			setDestinationCallData(DESTINATION_CALLDATA);
+			setFinalRoute(FINAL_ROUTE);
+			setTabIndex(1);
 		} else {
 			setProceedBtnTest("No Routes Available");
 			setProceedBtnDisabled(true);
@@ -224,7 +241,7 @@ const GlpBuyWidget = () => {
 		<>
 			{/* GLP Bridge Widget */}
 			<div className="max-w-[30rem] w-full bg-[#17192E] rounded border border-[#23263b] max-[900px]:min-w-full p-3">
-				{widgetScreen === 0 && (
+				{tabIndex === 0 && (
 					<>
 						<div className="pb-3">
 							<ChainsSelect />
@@ -319,7 +336,15 @@ const GlpBuyWidget = () => {
 						</button>
 					</>
 				)}
-				{widgetScreen === 1 && <>Hello final screen</>}
+				{tabIndex === 1 && (
+					<>
+						<BridgeTokens
+							setTabIndex={setTabIndex}
+							route={finalRoute}
+							destinationCallData={destinationCallData}
+						/>
+					</>
+				)}
 			</div>
 		</>
 	);

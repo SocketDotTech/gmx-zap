@@ -22,14 +22,14 @@ const DEBOUNCE_TIMEOUT = 1500;
 export const InputTokenDetail = () => {
 	const dispatch = useAppDispatch();
 	const { address } = useAccount();
+	const { inputToken, fromTokensList, inputTokenBalance, inputTokenAmount } =
+		useAppSelector((state) => state.tokens);
+	const { inputChainId } = useAppSelector((state) => state.chains);
 
 	const [hideInputTokenDropdown, setHideInputTokenDropdown] = useState(true);
-	const [inputTokenAmountField, setInputTokenAmountField] = useState("");
+	const [inputTokenAmountField, setInputTokenAmountField] =
+		useState(inputTokenAmount);
 	const [inputTokenPrice, setInputTokenPrice] = useState(0);
-	const { inputToken, fromTokensList, inputTokenBalance } = useAppSelector(
-		(state) => state.tokens
-	);
-	const { inputChainId } = useAppSelector((state) => state.chains);
 
 	// debounce set inputTokenAmount in redux
 	const debouncedDispatchTokenAmount = useDebouncedCallback(

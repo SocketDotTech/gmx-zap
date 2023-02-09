@@ -4,6 +4,7 @@ export type ChainDetail = {
 	chainId: number;
 	name: string;
 	icon: string;
+	explorers: Array<string>;
 };
 
 // chainID : {}
