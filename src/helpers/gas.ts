@@ -37,7 +37,7 @@ export const setGasPrice = async (
 export const getGasLimit = async (
 	contract: Contract,
 	method: string,
-	params = [],
+	params = [] as any,
 	value: BigNumberish
 ) => {
 	const defaultValue = bigNumberify(0);

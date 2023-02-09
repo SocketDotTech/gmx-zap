@@ -4,6 +4,7 @@ import glpTokenAbi from "./abis/GlpToken.json";
 import feeGlpTrackerAbi from "./abis/FeeGlpTracker.json";
 import readerAbi from "./abis/Reader.json";
 import rewardReaderAbi from "./abis/RewardReader.json";
+import rewardRouterAbi from "./abis/RewardRouter.json";
 import { NativeTokenDetail } from "../types";
 import { ARBITRUM, AVALANCHE } from "./chains";
 
@@ -16,18 +17,8 @@ export const supportedOutputChains = [ARBITRUM, AVALANCHE];
 export const glpSupportedTokens: {
 	[x: number]: string[];
 } = {
-	42161: [
-		"ETH",
-		"WBTC",
-		"LINK",
-		"UNI",
-		"USDC",
-		"USDT",
-		"DAI",
-		"FRAX",
-		"WETH",
-	],
-	43114: ["WETH.E", "AVAX", "WBTC.E", "BTC.B", "USDC", "USDC.E", "WAVAX"],
+	42161: ["WBTC", "LINK", "UNI", "USDC", "USDT", "DAI", "FRAX", "WETH"],
+	43114: ["WETH.E", "WBTC.E", "BTC.B", "USDC", "USDC.E", "WAVAX"],
 };
 
 export const GLP_DECIMALS = 18;
@@ -64,6 +55,7 @@ export const abis = {
 	feeGlpTrackerAbi,
 	readerAbi,
 	rewardReaderAbi,
+	rewardRouterAbi,
 };
 
 export * from "./contracts";
