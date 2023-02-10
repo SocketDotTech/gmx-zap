@@ -82,7 +82,6 @@ const GlpBuyWidget = () => {
 			),
 			cacheTime: 0,
 			refetchOnWindowFocus: false,
-			refetchInterval: 15000,
 		}
 	);
 
