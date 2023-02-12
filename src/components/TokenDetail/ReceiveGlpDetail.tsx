@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { USD_DECIMALS } from "../../config";
 import { formatAmount } from "../../helpers";
 import { useAppSelector } from "../../hooks";
 
 export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 	const { glpPrice } = useAppSelector((state) => state.glp);
+	const { inputTokenAmount } = useAppSelector((state) => state.tokens);
 
 	return (
 		<div
@@ -15,7 +16,7 @@ export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 			<div className="flex pb-3">
 				<div className="grow text-base text-zinc-400 font-medium mr-2">
 					Receive: $
-					{glpReceived === ""
+					{glpReceived === "" || inputTokenAmount === ""
 						? "0"
 						: (
 								parseFloat(glpReceived) *
@@ -39,7 +40,7 @@ export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none"
 						disabled
 						value={
-							glpReceived === ""
+							glpReceived === "" || inputTokenAmount === ""
 								? "0"
 								: parseFloat(glpReceived).toString()
 						}

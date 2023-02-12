@@ -34,7 +34,7 @@ export const GlpBuyWidget = () => {
 	const { inputChainId, outputChainId, chainsInfo } = useAppSelector(
 		(state) => state.chains
 	);
-	const { route } = useAppSelector((state) => state.route);
+	const { route, slippage } = useAppSelector((state) => state.route);
 
 	const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
 	const [proceedBtnText, setProceedBtnTest] = useState<string>("Proceed");
@@ -318,10 +318,10 @@ export const GlpBuyWidget = () => {
 							)}
 						<div className="flex justify-between">
 							<div className="grow text-sm text-zinc-400 font-medium mr-2">
-								Fees
+								Slippage
 							</div>
 							<div className="text-sm text-white font-medium text-right">
-								0.02%
+								{slippage}%
 							</div>
 						</div>
 

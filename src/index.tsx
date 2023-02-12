@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./redux";
+import "react-tooltip/dist/react-tooltip.css";
 
 ReactDOM.render(
 	<React.StrictMode>

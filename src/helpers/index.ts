@@ -14,10 +14,21 @@ export const swapChainsCompatible = (
 	return false;
 };
 
-const regExp = new RegExp(/^\d*\.?\d*$/);
+const regExpForValidInput = new RegExp(/^\d*\.?\d*$/);
+const regExpForValidSlippage = new RegExp(
+	/^(50(?:\.0{0,2})?|[0-4]?[0-9](?:\.[0-9]{0,2})?)$/
+);
 
 export const isValidInput = (ch: any) => {
-	if (regExp.test(ch)) {
+	if (regExpForValidInput.test(ch)) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+export const isValidSlippage = (ch: any) => {
+	if (regExpForValidSlippage.test(ch)) {
 		return true;
 	} else {
 		return false;
