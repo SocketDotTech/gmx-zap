@@ -10,7 +10,7 @@ type Props = {
 	onClick?: () => void;
 };
 
-const PrimaryButton = ({
+export const PrimaryButton = ({
 	buttonText,
 	bgColor,
 	width = "100%",
@@ -38,5 +38,3 @@ const PrimaryButton = ({
 		</button>
 	);
 };
-
-export default PrimaryButton;

@@ -26,7 +26,7 @@ import {
 	getGlpSupply,
 } from "../../services";
 
-const GlpStats = () => {
+export const GlpStats = () => {
 	const dispatch = useAppDispatch();
 	const { address } = useAccount();
 	const { outputChainId } = useAppSelector((state) => state.chains);
@@ -244,5 +244,3 @@ const GlpStats = () => {
 		</>
 	);
 };
-
-export default GlpStats;

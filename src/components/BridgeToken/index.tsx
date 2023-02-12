@@ -20,7 +20,7 @@ type BridgeTokensProps = {
 	setTabIndex: (tab: number) => void;
 };
 
-const BridgeTokens = ({
+export const BridgeTokens = ({
 	route,
 	destinationCallData,
 	setTabIndex,
@@ -378,5 +378,3 @@ const BridgeTokens = ({
 		</div>
 	);
 };
-
-export default BridgeTokens;

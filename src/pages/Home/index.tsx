@@ -1,8 +1,7 @@
 import React from "react";
-import GlpBuyWidget from "../../components/GlpBuyWidget";
-import GlpStats from "../../components/GlpStats";
+import { GlpBuyWidget, GlpStats } from "../../components";
 
-const Home = () => {
+export const Home = () => {
 	return (
 		<div className="max-w-screen-xl py-10 sm:py-16 px-5 sm:px-8 m-auto flex flex-col">
 			{/* Buy GLP heading */}
@@ -31,5 +30,3 @@ const Home = () => {
 		</div>
 	);
 };
-
-export default Home;

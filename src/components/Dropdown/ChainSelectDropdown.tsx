@@ -8,7 +8,7 @@ type Props = {
 	onHide: (value: boolean) => void;
 };
 
-const ChainSelectDropdown = ({ options, setChain, onHide }: Props) => {
+export const ChainSelectDropdown = ({ options, setChain, onHide }: Props) => {
 	const clickAwayRef = useRef<HTMLDivElement>(null);
 
 	useClickAway(clickAwayRef, () => onHide(true));
@@ -40,5 +40,3 @@ const ChainSelectDropdown = ({ options, setChain, onHide }: Props) => {
 		</div>
 	);
 };
-
-export default ChainSelectDropdown;

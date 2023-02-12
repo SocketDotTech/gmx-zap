@@ -16,13 +16,14 @@ import { expandDecimals, formatAmount, getGasLimit } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setRoute } from "../../redux";
 import { getQuote } from "../../services";
-import BridgeTokens from "../BridgeToken";
+import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
+import { UserSettings } from "../UserSettings";
 
 let quoteListResponse: any;
 
-const GlpBuyWidget = () => {
+export const GlpBuyWidget = () => {
 	const { address } = useAccount();
 	const { data: signer } = useSigner();
 	const { chain } = useNetwork();
@@ -243,6 +244,9 @@ const GlpBuyWidget = () => {
 				{tabIndex === 0 && (
 					<>
 						<div className="pb-3">
+							<UserSettings />
+						</div>
+						<div className="pb-3">
 							<ChainsSelect />
 						</div>
 						<div>
@@ -348,5 +352,3 @@ const GlpBuyWidget = () => {
 		</>
 	);
 };
-
-export default GlpBuyWidget;

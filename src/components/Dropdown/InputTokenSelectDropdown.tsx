@@ -21,7 +21,7 @@ type Props = {
 	onHide: (value: boolean) => void;
 };
 
-const InputTokenSelectDropdown = ({
+export const InputTokenSelectDropdown = ({
 	options,
 	setTokenDetail,
 	onHide,
@@ -209,5 +209,3 @@ const InputTokenSelectDropdown = ({
 		</div>
 	);
 };
-
-export default InputTokenSelectDropdown;

@@ -4,10 +4,8 @@ import { formatAmount } from "../../helpers";
 import { useAppSelector } from "../../hooks";
 
 export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
-	const [outputTokenAmount, setOutputTokenAmount] = useState("");
 	const { glpPrice } = useAppSelector((state) => state.glp);
 
-	const amount = 0;
 	return (
 		<div
 			id="receive-glp"
@@ -39,9 +37,6 @@ export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 					<input
 						placeholder="0"
 						className="text-xl font-medium bg-transparent w-full text-left border-none outline-none"
-						onChange={(e) => {
-							setOutputTokenAmount(e.target.value);
-						}}
 						disabled
 						value={
 							glpReceived === ""

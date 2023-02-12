@@ -14,7 +14,7 @@ import {
 } from "../../redux";
 import { getSupportedChains } from "../../services";
 
-const ChainsSelect: React.FC = () => {
+export const ChainsSelect: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const chainsResponse = useQuery(["chains"], getSupportedChains, {
 		refetchOnWindowFocus: false,
@@ -82,5 +82,3 @@ const ChainsSelect: React.FC = () => {
 		</div>
 	);
 };
-
-export default ChainsSelect;

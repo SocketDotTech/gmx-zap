@@ -1,1 +1,1 @@
-export { default as ChainsSelect } from "./ChainsSelect";
+export * from "./ChainsSelect";
