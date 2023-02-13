@@ -7,8 +7,6 @@ import {
 	abis,
 	BASIS_POINTS_DIVISOR,
 	CONTRACTS,
-	DEFAULT_SLIPPAGE_AMOUNT,
-	NATIVE_TOKEN,
 	USD_DECIMALS,
 	ZERO_BIG_NUMBER,
 } from "../../config";
@@ -160,19 +158,19 @@ export const GlpBuyWidget = () => {
 				parseFloat(glpPriceInUSD)
 			).toString();
 			minGlpAmount = parseFloat(minGlpAmount).toFixed(3);
+			setMinGlpReceived(minGlpAmount);
 			minGlpAmount = BigNumber.from(
 				(parseFloat(minGlpAmount) * 1000).toFixed(0)
 			)
-				.mul(BASIS_POINTS_DIVISOR - DEFAULT_SLIPPAGE_AMOUNT)
+				.mul(BASIS_POINTS_DIVISOR - slippage * 100)
 				.div(BASIS_POINTS_DIVISOR)
 				.toString();
 
 			setMinGlpAmount(expandDecimals(minGlpAmount, 15));
 
 			minGlpAmount = (parseInt(minGlpAmount) / 1000).toString();
-			setMinGlpReceived(minGlpAmount);
 		}
-	}, [route]);
+	}, [route, slippage]);
 
 	const proceedToFinal = async () => {
 		setProceedBtnTest("Loading...");
@@ -184,7 +182,12 @@ export const GlpBuyWidget = () => {
 			signer!
 		);
 		const method = "mintAndStakeGlp";
-		console.log(method);
+		console.log([
+			outputToken.address,
+			BigNumber.from(route.toAmount),
+			0,
+			minGlpAmount,
+		]);
 		const params = [
 			outputToken.address,
 			BigNumber.from(route.toAmount),
