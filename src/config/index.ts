@@ -5,6 +5,7 @@ import feeGlpTrackerAbi from "./abis/FeeGlpTracker.json";
 import readerAbi from "./abis/Reader.json";
 import rewardReaderAbi from "./abis/RewardReader.json";
 import rewardRouterAbi from "./abis/RewardRouter.json";
+import socketGlpWrapperAbi from "./abis/SocketGlpWrapper.json";
 import { NativeTokenDetail } from "../types";
 import { ARBITRUM, AVALANCHE } from "./chains";
 
@@ -56,6 +57,7 @@ export const abis = {
 	readerAbi,
 	rewardReaderAbi,
 	rewardRouterAbi,
+	socketGlpWrapperAbi,
 };
 
 export * from "./contracts";

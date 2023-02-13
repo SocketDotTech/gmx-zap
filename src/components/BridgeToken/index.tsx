@@ -239,7 +239,6 @@ export const BridgeTokens = ({
 				data: apiTxData.txData,
 				value: apiTxData.value,
 				gasPrice: gasPrice,
-				gasLimit: gasEstimate,
 			});
 
 			// Initiates swap/bridge transaction on user's frontend which user has to sign

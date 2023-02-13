@@ -20,6 +20,7 @@ import { TokensDetail } from "../TokenDetail";
 import { UserSettings } from "../UserSettings";
 
 let quoteListResponse: any;
+const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
 
 export const GlpBuyWidget = () => {
 	const { address } = useAccount();
@@ -69,7 +70,7 @@ export const GlpBuyWidget = () => {
 				sort: "output",
 				includeBridges: ["stargate"],
 				singleTxOnly: true,
-				recipient: CONTRACTS[outputChainId]["GlpRewardRouter"],
+				recipient: CONTRACTS[outputChainId]["SocketGlpWrapper"],
 			});
 		},
 		{
@@ -173,34 +174,49 @@ export const GlpBuyWidget = () => {
 	}, [route, slippage]);
 
 	const proceedToFinal = async () => {
+		if (!address) return;
 		setProceedBtnTest("Loading...");
 		setProceedBtnDisabled(true);
 
 		const contract = new ethers.Contract(
-			CONTRACTS[outputChainId]["GlpRewardRouter"],
+			CONTRACTS[outputChainId]["SocketGlpWrapper"],
 			abis.rewardRouterAbi,
 			signer!
 		);
-		const method = "mintAndStakeGlp";
-		console.log([
-			outputToken.address,
-			BigNumber.from(route.toAmount),
-			0,
-			minGlpAmount,
-		]);
-		const params = [
-			outputToken.address,
-			BigNumber.from(route.toAmount),
-			0,
-			minGlpAmount,
-		];
+		const method = "buyGlp";
+		console.log([address, outputToken.address, 0, minGlpAmount]);
+		const params = [address, outputToken.address, 0, minGlpAmount];
 		const value = 0;
 
-		const iFace = new Interface(abis.rewardRouterAbi);
+		const iFace = new Interface(abis.socketGlpWrapperAbi);
 		const destinationPayload = iFace.encodeFunctionData(method, params);
 
-		const gasLimit = await getGasLimit(contract, method, params, value);
+		// const gasLimit = await getGasLimit(contract, method, params, value);
+		const gasLimit = BigNumber.from(GAS_LIMIT_FOR_BUYING_GLP);
 		const destinationGasLimit = gasLimit.toNumber() + 30000;
+
+		console.log(destinationGasLimit);
+		console.log({
+			fromChainId: inputChainId.toString(),
+			fromTokenAddress: inputToken.address,
+			toChainId: outputChainId.toString(),
+			toTokenAddress: outputToken.address,
+			fromAmount: (
+				parseFloat(inputTokenAmount) *
+				10 ** inputToken.decimals
+			)
+				.toLocaleString()
+				.split(",")
+				.join(""),
+			userAddress: address || "",
+			uniqueRoutesPerBridge: true,
+			sort: "output",
+			includeBridges: ["stargate"],
+			singleTxOnly: true,
+			recipient: CONTRACTS[outputChainId]["SocketGlpWrapper"],
+			destinationPayload: destinationPayload,
+			destinationGasLimit: destinationGasLimit.toString(),
+		});
 
 		const finalRoute: any = await getQuote({
 			fromChainId: inputChainId.toString(),
@@ -219,7 +235,7 @@ export const GlpBuyWidget = () => {
 			sort: "output",
 			includeBridges: ["stargate"],
 			singleTxOnly: true,
-			recipient: CONTRACTS[outputChainId]["GlpRewardRouter"],
+			recipient: CONTRACTS[outputChainId]["SocketGlpWrapper"],
 			destinationPayload: destinationPayload,
 			destinationGasLimit: destinationGasLimit.toString(),
 		});
