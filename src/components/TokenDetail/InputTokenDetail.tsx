@@ -114,7 +114,8 @@ export const InputTokenDetail = () => {
 			balanceResponse,
 			inputChainId
 		);
-		if (!tokenBalance[inputToken.address]) return;
+		if (!tokenBalance[inputToken.address])
+			dispatch(setInputTokenBalance(0));
 		dispatch(setInputTokenBalance(tokenBalance[inputToken.address]));
 	}, [balanceResponse.isSuccess, balanceResponse.isFetching, inputToken]);
 

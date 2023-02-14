@@ -11,7 +11,6 @@ import { queryResponseObj } from "../../types";
 import { PrimaryButton } from "../Button";
 import { useAppSelector } from "../../hooks";
 import { useAccount, useProvider, useSigner } from "wagmi";
-let allowanceAmount: queryResponseObj;
 let bridgeStatus: queryResponseObj;
 
 type BridgeTokensProps = {
@@ -67,7 +66,7 @@ export const BridgeTokens = ({
 		outputToken.symbol;
 	const bridgeName = route.usedBridgeNames[0];
 
-	allowanceAmount = useQuery(
+	const allowanceAmount: queryResponseObj = useQuery(
 		["checkAllowance"],
 		() =>
 			getAllowanceDetail({
@@ -120,7 +119,7 @@ export const BridgeTokens = ({
 				setDestinationTxHash(response.destinationTransactionHash);
 			}
 		}
-	}, [bridgeStatus.isSuccess, destinationTxHash]);
+	}, [bridgeStatus.isSuccess, bridgeStatus.isFetching, destinationTxHash]);
 
 	useEffect(() => {
 		if (allowanceAmount.isSuccess) {
@@ -141,7 +140,7 @@ export const BridgeTokens = ({
 				setHideBridgeBtn(false);
 			}
 		}
-	}, [allowanceAmount.isSuccess]);
+	}, [allowanceAmount.isSuccess, allowanceAmount.isFetching]);
 
 	// run this effect on only first mount of this component
 	useEffect(() => {
