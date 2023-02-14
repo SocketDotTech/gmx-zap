@@ -22,7 +22,7 @@ export const getChainDataByChainId = (
 	toChainsList: Array<ChainDetail>;
 } => {
 	const data = chains.data?.data?.result;
-	const chainsByChainId: ChainsDetailObj = {};
+	const chainsByChainId: any = {};
 	const fromChainsList: Array<ChainDetail> = [];
 	const toChainsList: Array<ChainDetail> = [];
 
@@ -37,6 +37,7 @@ export const getChainDataByChainId = (
 				name: chain.name,
 				icon: chain.icon,
 				explorers: chain.explorers,
+				currency: chain.currency,
 			});
 		}
 		if (
@@ -48,6 +49,7 @@ export const getChainDataByChainId = (
 				name: chain.name,
 				icon: chain.icon,
 				explorers: chain.explorers,
+				currency: chain.currency,
 			});
 		}
 	});

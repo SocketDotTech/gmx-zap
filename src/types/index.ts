@@ -5,6 +5,7 @@ export type ChainDetail = {
 	name: string;
 	icon: string;
 	explorers: Array<string>;
+	currency: any;
 };
 
 // chainID : {}

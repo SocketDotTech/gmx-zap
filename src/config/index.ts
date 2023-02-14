@@ -36,6 +36,9 @@ export const glpSupportedTokens: {
 	43114: ["WETH.E", "WBTC.E", "BTC.B", "USDC", "USDC.E", "WAVAX"],
 };
 
+export const NATIVE_TOKEN_ADDRESS =
+	"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+
 export const GLP_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 

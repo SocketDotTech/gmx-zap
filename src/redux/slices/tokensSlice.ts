@@ -11,6 +11,8 @@ export interface ITokensSliceState {
 	nativeToken: NativeTokenDetail;
 	inputTokenBalance: number;
 	inputTokenAmount: string;
+	inputTokenPrice: number;
+	inputChainNativeTokenPrice: number;
 }
 
 const initTokenDetail: TokenDetail = {
@@ -35,6 +37,8 @@ const initialState: ITokensSliceState = {
 	},
 	inputTokenBalance: 0,
 	inputTokenAmount: "",
+	inputTokenPrice: 0,
+	inputChainNativeTokenPrice: 0,
 };
 
 export const tokensSlice = createSlice({
@@ -65,6 +69,15 @@ export const tokensSlice = createSlice({
 		setInputTokenAmount: (state, action: PayloadAction<string>) => {
 			state.inputTokenAmount = action.payload;
 		},
+		setInputTokenPrice: (state, action: PayloadAction<number>) => {
+			state.inputTokenPrice = action.payload;
+		},
+		setInputChainNativeTokenPrice: (
+			state,
+			action: PayloadAction<number>
+		) => {
+			state.inputChainNativeTokenPrice = action.payload;
+		},
 	},
 });
 
@@ -77,6 +90,8 @@ export const {
 	setNativeToken,
 	setInputTokenBalance,
 	setInputTokenAmount,
+	setInputTokenPrice,
+	setInputChainNativeTokenPrice,
 } = tokensSlice.actions;
 
 export default tokensSlice.reducer;

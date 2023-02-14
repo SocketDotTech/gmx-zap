@@ -7,10 +7,11 @@ import {
 	abis,
 	BASIS_POINTS_DIVISOR,
 	CONTRACTS,
+	GLP_DECIMALS,
 	USD_DECIMALS,
 	ZERO_BIG_NUMBER,
 } from "../../config";
-import { expandDecimals, formatAmount, getGasLimit } from "../../helpers";
+import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setRoute } from "../../redux";
 import { getQuote } from "../../services";
@@ -18,6 +19,7 @@ import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
 import { UserSettings } from "../UserSettings";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 let quoteListResponse: any;
 const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
@@ -27,8 +29,13 @@ export const GlpBuyWidget = () => {
 	const { data: signer } = useSigner();
 	const { chain } = useNetwork();
 	const dispatch = useAppDispatch();
-	const { inputToken, inputTokenAmount, outputToken, inputTokenBalance } =
-		useAppSelector((state) => state.tokens);
+	const {
+		inputToken,
+		inputTokenAmount,
+		outputToken,
+		inputTokenBalance,
+		inputChainNativeTokenPrice,
+	} = useAppSelector((state) => state.tokens);
 	const { glpPrice } = useAppSelector((state) => state.glp);
 	const { inputChainId, outputChainId, chainsInfo } = useAppSelector(
 		(state) => state.chains
@@ -318,13 +325,27 @@ export const GlpBuyWidget = () => {
 												Source Gas Fee
 											</div>
 											<div className="text-sm text-white font-medium text-right">
-												$
+												~{" "}
+												{(
+													route.totalGasFeesInUsd.toFixed(
+														2
+													) /
+													inputChainNativeTokenPrice
+												)
+													.toFixed(3)
+													.toString()}{" "}
+												{
+													chainsInfo[inputChainId]
+														.currency.symbol
+												}{" "}
+												($
 												{route.totalGasFeesInUsd
 													.toFixed(2)
 													.toString()}
+												)
 											</div>
 										</div>
-										<div className="flex justify-between">
+										{/* <div className="flex justify-between">
 											<div className="grow text-sm text-zinc-400 font-medium mr-2">
 												Dest. Token Amount
 											</div>
@@ -335,6 +356,20 @@ export const GlpBuyWidget = () => {
 												).toString()}{" "}
 												{outputToken.symbol}
 											</div>
+										</div> */}
+										<div className="flex justify-between">
+											<div className="grow text-sm text-zinc-400 font-medium mr-2">
+												Min GLP Received
+											</div>
+											<div className="text-sm text-white font-medium text-right">
+												{formatAmount(
+													minGlpAmount,
+													GLP_DECIMALS,
+													3,
+													true
+												)}{" "}
+												GLP
+											</div>
 										</div>
 									</div>
 									<div className="pb-3"></div>
@@ -342,7 +377,20 @@ export const GlpBuyWidget = () => {
 							)}
 						<div className="flex justify-between">
 							<div className="grow text-sm text-zinc-400 font-medium mr-2">
-								Slippage
+								<div className="flex flex-row">
+									Slippage
+									<img
+										id="slippage-glp-info"
+										src="assets/info.svg"
+										className="ml-1.5 w-4 h-4 cursor-pointer self-center"
+									/>
+									<ReactTooltip
+										anchorId="slippage-glp-info"
+										place="top"
+										style={{ width: "200px" }}
+										content="Your buying GLP tx will revert and you'll receive USDC if the price changes unfavourably by more than this percentage."
+									/>
+								</div>
 							</div>
 							<div className="text-sm text-white font-medium text-right">
 								{slippage}%

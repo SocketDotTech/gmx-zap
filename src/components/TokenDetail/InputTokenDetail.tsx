@@ -5,9 +5,11 @@ import { isValidInput } from "../../helpers";
 import { getUserBalanceOfChainId } from "../../helpers/DataHelper";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+	setInputChainNativeTokenPrice,
 	setInputToken,
 	setInputTokenAmount,
 	setInputTokenBalance,
+	setInputTokenPrice,
 } from "../../redux";
 import {
 	getTokenPriceByTokenAddress,
@@ -16,20 +18,25 @@ import {
 import { queryResponseObj } from "../../types";
 import { InputTokenSelectDropdown } from "../Dropdown";
 import { useDebouncedCallback } from "use-debounce";
+import { NATIVE_TOKEN_ADDRESS } from "../../config";
 
 const DEBOUNCE_TIMEOUT = 1500;
 
 export const InputTokenDetail = () => {
 	const dispatch = useAppDispatch();
 	const { address } = useAccount();
-	const { inputToken, fromTokensList, inputTokenBalance, inputTokenAmount } =
-		useAppSelector((state) => state.tokens);
+	const {
+		inputToken,
+		fromTokensList,
+		inputTokenBalance,
+		inputTokenAmount,
+		inputTokenPrice,
+	} = useAppSelector((state) => state.tokens);
 	const { inputChainId } = useAppSelector((state) => state.chains);
 
 	const [hideInputTokenDropdown, setHideInputTokenDropdown] = useState(true);
 	const [inputTokenAmountField, setInputTokenAmountField] =
 		useState(inputTokenAmount);
-	const [inputTokenPrice, setInputTokenPrice] = useState(0);
 
 	// debounce set inputTokenAmount in redux
 	const debouncedDispatchTokenAmount = useDebouncedCallback(
@@ -45,6 +52,21 @@ export const InputTokenDetail = () => {
 			getTokenPriceByTokenAddress({
 				chainId: inputChainId.toString(),
 				tokenAddress: inputToken.address,
+			}),
+		{
+			enabled: !!(inputToken.chainId !== 0),
+			refetchOnWindowFocus: false,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
+		}
+	);
+
+	const inputChainNativeTokenPriceResponse: queryResponseObj = useQuery(
+		["inputChainNativeTokenPrice", inputToken],
+		() =>
+			getTokenPriceByTokenAddress({
+				chainId: inputChainId.toString(),
+				tokenAddress: NATIVE_TOKEN_ADDRESS,
 			}),
 		{
 			enabled: !!(inputToken.chainId !== 0),
@@ -67,6 +89,22 @@ export const InputTokenDetail = () => {
 
 	useEffect(() => {
 		if (
+			!inputChainNativeTokenPriceResponse.isSuccess ||
+			inputToken.chainId === 0
+		)
+			return;
+
+		const price: number =
+			inputChainNativeTokenPriceResponse.data?.data?.result.tokenPrice;
+		dispatch(setInputChainNativeTokenPrice(price));
+	}, [
+		inputChainNativeTokenPriceResponse.isSuccess,
+		inputChainNativeTokenPriceResponse.isFetching,
+		inputToken,
+	]);
+
+	useEffect(() => {
+		if (
 			(!balanceResponse.isSuccess || inputToken.chainId === 0,
 			inputChainId === 0)
 		)
@@ -78,7 +116,7 @@ export const InputTokenDetail = () => {
 		);
 		if (!tokenBalance[inputToken.address]) return;
 		dispatch(setInputTokenBalance(tokenBalance[inputToken.address]));
-	}, [balanceResponse.isSuccess, inputToken]);
+	}, [balanceResponse.isSuccess, balanceResponse.isFetching, inputToken]);
 
 	useEffect(() => {
 		if (!inputTokenPriceResponse.isSuccess || inputToken.chainId === 0)
@@ -86,8 +124,12 @@ export const InputTokenDetail = () => {
 
 		const price: number =
 			inputTokenPriceResponse.data?.data?.result.tokenPrice;
-		setInputTokenPrice(price);
-	}, [inputTokenPriceResponse.isSuccess, inputToken]);
+		dispatch(setInputTokenPrice(price));
+	}, [
+		inputTokenPriceResponse.isSuccess,
+		inputTokenPriceResponse.isFetching,
+		inputToken,
+	]);
 
 	return (
 		<div
