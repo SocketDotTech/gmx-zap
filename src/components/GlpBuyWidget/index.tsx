@@ -416,6 +416,7 @@ export const GlpBuyWidget = () => {
 						<BridgeTokens
 							setTabIndex={setTabIndex}
 							route={finalRoute}
+							glpReceived={minGlpReceived}
 							destinationCallData={destinationCallData}
 						/>
 					</>

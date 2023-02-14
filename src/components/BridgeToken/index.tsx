@@ -17,12 +17,14 @@ let bridgeStatus: queryResponseObj;
 type BridgeTokensProps = {
 	route: any;
 	destinationCallData: any;
+	glpReceived: string;
 	setTabIndex: (tab: number) => void;
 };
 
 export const BridgeTokens = ({
 	route,
 	destinationCallData,
+	glpReceived,
 	setTabIndex,
 }: BridgeTokensProps) => {
 	const { address } = useAccount();
@@ -207,14 +209,14 @@ export const BridgeTokens = ({
 
 			setLoadingApproveBtn(false);
 			setApproveBtnText("Approved");
-			setInterval(() => {
+			setTimeout(() => {
 				setHideApproveBtn(true);
 			}, 3000);
 			setDisabledBridgeBtn(false);
 		} catch (err: any) {
 			console.error(err);
 			setWarning(err.message);
-			setInterval(() => {
+			setTimeout(() => {
 				setWarning("");
 			}, 3000);
 			setDisabledApproveBtn(false);
@@ -249,15 +251,15 @@ export const BridgeTokens = ({
 			console.log("Bridging Transaction : ", receipt.transactionHash);
 
 			setLoadingBridgeBtn(false);
-			setBridgeBtnText("Bridged");
-			setInterval(() => {
+			// setBridgeBtnText("Bridging Tx initiated");
+			setTimeout(() => {
 				setHideBridgeBtn(true);
 				setSourceTxHash(txHash);
 			}, 3000);
 		} catch (err: any) {
 			console.error(err);
 			setWarning(err.message);
-			setInterval(() => {
+			setTimeout(() => {
 				setWarning("");
 			}, 3000);
 			setDisabledBridgeBtn(false);
@@ -288,8 +290,8 @@ export const BridgeTokens = ({
 			<div className="text-white text-xl font-medium">Bridge Info</div>
 			<div className="text-zinc-400 test-base font-medium py-1">
 				{inputAmountSimplified} on {chainsInfo[inputChainId]["name"]} to{" "}
-				{outputAmountSimplified} on {chainsInfo[outputChainId]["name"]}{" "}
-				via {bridgeName} bridge
+				{glpReceived} GLP on {chainsInfo[outputChainId]["name"]} via{" "}
+				{bridgeName} bridge
 			</div>
 			{loading && (
 				<div className="text-white text-base font-medium mt-4 mb-4 py-5 text-center">
@@ -300,11 +302,11 @@ export const BridgeTokens = ({
 				</div>
 			)}
 			{sourceTxHash !== "" && destinationTxHash === "" && (
-				<div className="text-white text-base font-medium mt-4 mb-4 py-5 text-center">
-					<img
+				<div className="text-white text-base font-medium mt-4 mb-4 pt-5 text-center">
+					{/* <img
 						src="./assets/loading.svg"
 						className="inline animate-spin -ml-1 mr-2 h-20 w-20 text-white"
-					/>
+					/> */}
 					<div className="text-zinc-400 text-base font-medium pt-4">
 						Bridging in Progress...
 					</div>
@@ -323,41 +325,43 @@ export const BridgeTokens = ({
 					{warning}
 				</div>
 			)}
-			<div className={`flex flex-row gap-4 mt-14`}>
-				{!hideApproveBtn && (
-					<PrimaryButton
-						buttonText={approveBtnText}
-						loading={loadingApproveBtn}
-						bgColor={"#2E3FD9"}
-						disabled={disabledApproveBtn}
-						onClick={handleApprove}
-					/>
-				)}
-				{!hideBridgeBtn && (
-					<PrimaryButton
-						buttonText={bridgeBtnText}
-						loading={loadingBridgeBtn}
-						bgColor={"#2E3FD9"}
-						disabled={disabledBridgeBtn}
-						onClick={handleBridge}
-					/>
-				)}
-			</div>
+			{sourceTxHash === "" && (
+				<div className={`flex flex-row gap-4 mt-14`}>
+					{!hideApproveBtn && (
+						<PrimaryButton
+							buttonText={approveBtnText}
+							loading={loadingApproveBtn}
+							bgColor={"#2E3FD9"}
+							disabled={disabledApproveBtn}
+							onClick={handleApprove}
+						/>
+					)}
+					{!hideBridgeBtn && (
+						<PrimaryButton
+							buttonText={bridgeBtnText}
+							loading={loadingBridgeBtn}
+							bgColor={"#2E3FD9"}
+							disabled={disabledBridgeBtn}
+							onClick={handleBridge}
+						/>
+					)}
+				</div>
+			)}
 			{sourceTxHash !== "" && chainsInfo && (
-				<div className="flex flex-row justify-around mt-5">
-					<button className="text-xs text-white hover:underline border rounded-3xl border-zinc-400 bg-[#2E3FD9] px-2.5 py-1.5 flex flex-row">
+				<div className="flex flex-row justify-around mt-1">
+					<button className="text-base text-white hover:underline border rounded-3xl border-zinc-400 bg-[#2E3FD9] px-2.5 py-1.5 flex flex-row">
 						<img
 							src={chainsInfo[inputChainId].icon}
-							className="w-4 h-4 rounded-full mr-1"
+							className="w-6 h-6 rounded-full mr-2"
 						/>
 						<a
-							href={`${chainsInfo[inputChainId].explorers[0]}/tx/${sourceTxHash}`}
+							href={`https://socketscan.io/tx/${sourceTxHash}`}
 							target="_blank"
 						>
-							Source Tx
+							Track your Tx on Socketscan.io
 						</a>
 					</button>
-					<button
+					{/* <button
 						className="text-xs text-white hover:underline border disabled:pointer-events-none bg-[#2E3FD9] disabled:opacity-50 rounded-3xl border-zinc-400 px-2.5 py-1.5 flex flex-row"
 						disabled={destinationTxHash === ""}
 					>
@@ -371,7 +375,7 @@ export const BridgeTokens = ({
 						>
 							Destination Tx
 						</a>
-					</button>
+					</button> */}
 				</div>
 			)}
 		</div>
