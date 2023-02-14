@@ -36,6 +36,7 @@ export type queryResponseObj = {
 	isLoading: boolean;
 	isError: boolean;
 	isSuccess: boolean;
+	isFetching: boolean;
 	error: Object | null;
 	data:
 		| {

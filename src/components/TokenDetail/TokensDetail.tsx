@@ -21,7 +21,6 @@ import {
 } from "../../services";
 import { NativeTokenDetail, queryResponseObj } from "../../types";
 import { InputTokenDetail } from "./InputTokenDetail";
-import { OutputTokenDetail } from "./OutputTokenDetail";
 import { ReceiveGlpDetail } from "./ReceiveGlpDetail";
 
 export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
@@ -41,7 +40,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			}),
 		{
 			enabled: !!inputChainId,
-			refetchOnWindowFocus: false,
+			refetchOnWindowFocus: true,
 		}
 	);
 
@@ -55,7 +54,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			}),
 		{
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: false,
+			refetchOnWindowFocus: true,
 		}
 	);
 
@@ -68,9 +67,9 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			}),
 		{
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: false,
-			refetchInterval: 10000,
-			refetchIntervalInBackground: true,
+			refetchOnWindowFocus: true,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: false,
 		}
 	);
 
@@ -88,7 +87,11 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 		};
 
 		dispatch(setNativeToken(nativeTokenDetail));
-	}, [nativeTokenPriceResponse.isSuccess, outputChainId]);
+	}, [
+		nativeTokenPriceResponse.isSuccess,
+		nativeTokenPriceResponse.isFetching,
+		outputChainId,
+	]);
 
 	useEffect(() => {
 		if (
@@ -128,8 +131,8 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 		<div>
 			<InputTokenDetail />
 			<div className="pb-3"></div>
-			<OutputTokenDetail />
-			<div className="pb-3"></div>
+			{/* <OutputTokenDetail />
+			<div className="pb-3"></div> */}
 			<ReceiveGlpDetail glpReceived={glpReceived} />
 		</div>
 	);

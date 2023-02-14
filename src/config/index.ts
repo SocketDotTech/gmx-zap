@@ -7,10 +7,24 @@ import rewardReaderAbi from "./abis/RewardReader.json";
 import rewardRouterAbi from "./abis/RewardRouter.json";
 import socketGlpWrapperAbi from "./abis/SocketGlpWrapper.json";
 import { NativeTokenDetail } from "../types";
-import { ARBITRUM, AVALANCHE } from "./chains";
+import {
+	ARBITRUM,
+	AVALANCHE,
+	BSC,
+	ETHEREUM,
+	FANTOM,
+	OPTIMISM,
+	POLYGON,
+} from "./chains";
 
 export const supportedInputChains = [
-	1, 10, 56, 100, 137, 250, 42161, 43114, 1313161554,
+	ETHEREUM,
+	POLYGON,
+	BSC,
+	ARBITRUM,
+	AVALANCHE,
+	OPTIMISM,
+	FANTOM,
 ];
 
 export const supportedOutputChains = [ARBITRUM, AVALANCHE];

@@ -81,6 +81,7 @@ export const GlpBuyWidget = () => {
 				inputTokenAmount != ""
 			),
 			cacheTime: 0,
+			refetchInterval: 30000,
 			refetchOnWindowFocus: false,
 		}
 	);
@@ -142,7 +143,11 @@ export const GlpBuyWidget = () => {
 			route = result?.routes[0];
 		}
 		dispatch(setRoute(route));
-	}, [quoteListResponse.isSuccess, inputTokenAmount]);
+	}, [
+		quoteListResponse.isSuccess,
+		quoteListResponse.isFetching,
+		inputTokenAmount,
+	]);
 
 	useEffect(() => {
 		if (Object.keys(route).length === 0) {
@@ -272,7 +277,7 @@ export const GlpBuyWidget = () => {
 							<TokensDetail glpReceived={minGlpReceived} />
 						</div>
 						<div className="pb-3"></div>
-						{quoteListResponse.isLoading && (
+						{quoteListResponse.isFetching && (
 							<>
 								<div className="text-sm font-medium text-white">
 									<div className="flex justify-between">

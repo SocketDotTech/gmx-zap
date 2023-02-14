@@ -54,9 +54,9 @@ export const GlpStats = () => {
 				glpPrice !== ZERO_BIG_NUMBER &&
 				nativeToken.price !== ZERO_BIG_NUMBER
 			),
-			refetchOnWindowFocus: false,
-			refetchInterval: 10000,
-			refetchIntervalInBackground: true,
+			refetchOnWindowFocus: true,
+			refetchInterval: 3000,
+			refetchIntervalInBackground: false,
 		}
 	);
 
@@ -68,9 +68,9 @@ export const GlpStats = () => {
 			}),
 		{
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: false,
-			refetchInterval: 5000,
-			refetchIntervalInBackground: true,
+			refetchOnWindowFocus: true,
+			refetchInterval: 2000,
+			refetchIntervalInBackground: false,
 		}
 	);
 
@@ -83,9 +83,9 @@ export const GlpStats = () => {
 			}),
 		{
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: false,
+			refetchOnWindowFocus: true,
 			refetchInterval: 5000,
-			refetchIntervalInBackground: true,
+			refetchIntervalInBackground: false,
 		}
 	);
 
@@ -97,9 +97,9 @@ export const GlpStats = () => {
 			}),
 		{
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: false,
-			refetchInterval: 5000,
-			refetchIntervalInBackground: true,
+			refetchOnWindowFocus: true,
+			refetchInterval: 2000,
+			refetchIntervalInBackground: false,
 		}
 	);
 
@@ -108,7 +108,11 @@ export const GlpStats = () => {
 		const { glpPrice } = glpPriceResponse.data;
 
 		dispatch(setGlpPrice(glpPrice));
-	}, [glpPriceResponse.isSuccess, outputChainId]);
+	}, [
+		glpPriceResponse.isSuccess,
+		glpPriceResponse.isFetching,
+		outputChainId,
+	]);
 
 	useEffect(() => {
 		if (!glpBalanceResponse.isSuccess || glpPrice === ZERO_BIG_NUMBER)
@@ -121,7 +125,12 @@ export const GlpStats = () => {
 		setGlpWalletBalanceUsd(glpWalletBalanceUSD);
 		dispatch(setWalletBalance(glpWalletBalance));
 		dispatch(setStakedBalance(glpWalletBalance));
-	}, [glpBalanceResponse.isSuccess, outputChainId, glpPrice]);
+	}, [
+		glpBalanceResponse.isSuccess,
+		glpBalanceResponse.isFetching,
+		outputChainId,
+		glpPrice,
+	]);
 
 	useEffect(() => {
 		if (!glpSupplyResponse.isSuccess || glpPrice === ZERO_BIG_NUMBER)
@@ -133,7 +142,12 @@ export const GlpStats = () => {
 
 		setGlpTotalSupplyUsd(totalSupplyUSD);
 		dispatch(setTotalSupply(totalSupply));
-	}, [glpSupplyResponse.isSuccess, outputChainId, glpPrice]);
+	}, [
+		glpSupplyResponse.isSuccess,
+		glpSupplyResponse.isFetching,
+		outputChainId,
+		glpPrice,
+	]);
 
 	useEffect(() => {
 		if (
@@ -145,7 +159,13 @@ export const GlpStats = () => {
 		const { feeGlpTrackerApr } = glpTrackerAprResponse.data;
 
 		dispatch(setApr(feeGlpTrackerApr));
-	}, [glpTrackerAprResponse.isSuccess, outputChainId, glpPrice, nativeToken]);
+	}, [
+		glpTrackerAprResponse.isSuccess,
+		glpTrackerAprResponse.isFetching,
+		outputChainId,
+		glpPrice,
+		nativeToken,
+	]);
 
 	return (
 		<>
@@ -176,7 +196,7 @@ export const GlpStats = () => {
 							Price
 						</div>
 						<div className="text-base text-white text-right font-medium">
-							${formatAmount(glpPrice, USD_DECIMALS, 3, true)}
+							${formatAmount(glpPrice, USD_DECIMALS, 4, true)}
 						</div>
 					</div>
 					<div className="w-full flex justify-between pb-1">
