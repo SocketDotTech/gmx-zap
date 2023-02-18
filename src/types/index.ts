@@ -39,16 +39,16 @@ export type queryResponseObj = {
 	isSuccess: boolean;
 	isFetching: boolean;
 	error: Object | null;
+	data: responseObj | undefined;
+};
+
+export type responseObj = {
 	data:
 		| {
-				data:
-					| {
-							success: boolean;
-							result: {
-								[key: number | string]: any;
-							};
-					  }
-					| undefined;
+				success: boolean;
+				result: {
+					[key: number | string]: any;
+				};
 		  }
 		| undefined;
 };

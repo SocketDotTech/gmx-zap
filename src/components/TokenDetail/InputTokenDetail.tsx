@@ -46,7 +46,7 @@ export const InputTokenDetail = () => {
 		DEBOUNCE_TIMEOUT
 	);
 
-	const inputTokenPriceResponse: queryResponseObj = useQuery(
+	useQuery(
 		["inputTokenPrice", inputToken],
 		() =>
 			getTokenPriceByTokenAddress({
@@ -54,6 +54,10 @@ export const InputTokenDetail = () => {
 				tokenAddress: inputToken.address,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const price: number = data?.data?.result.tokenPrice;
+				dispatch(setInputTokenPrice(price));
+			},
 			enabled: !!(inputToken.chainId !== 0),
 			refetchOnWindowFocus: false,
 			refetchInterval: 5000,
@@ -61,7 +65,7 @@ export const InputTokenDetail = () => {
 		}
 	);
 
-	const inputChainNativeTokenPriceResponse: queryResponseObj = useQuery(
+	useQuery(
 		["inputChainNativeTokenPrice", inputToken],
 		() =>
 			getTokenPriceByTokenAddress({
@@ -69,6 +73,10 @@ export const InputTokenDetail = () => {
 				tokenAddress: NATIVE_TOKEN_ADDRESS,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const price: number = data?.data?.result.tokenPrice;
+				dispatch(setInputChainNativeTokenPrice(price));
+			},
 			enabled: !!(inputToken.chainId !== 0),
 			refetchOnWindowFocus: false,
 			refetchInterval: 10000,
@@ -76,61 +84,27 @@ export const InputTokenDetail = () => {
 		}
 	);
 
-	const balanceResponse = useQuery(
-		["userTokenBalance"],
+	useQuery(
+		["userTokenBalance", inputToken],
 		() =>
 			getUserTokenBalances({
 				userAddress: address!,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const tokenBalance = getUserBalanceOfChainId(
+					data,
+					inputChainId
+				);
+				if (!tokenBalance[inputToken.address])
+					dispatch(setInputTokenBalance(0));
+				dispatch(
+					setInputTokenBalance(tokenBalance[inputToken.address])
+				);
+			},
 			enabled: !!address,
 		}
 	);
-
-	useEffect(() => {
-		if (
-			!inputChainNativeTokenPriceResponse.isSuccess ||
-			inputToken.chainId === 0
-		)
-			return;
-
-		const price: number =
-			inputChainNativeTokenPriceResponse.data?.data?.result.tokenPrice;
-		dispatch(setInputChainNativeTokenPrice(price));
-	}, [
-		inputChainNativeTokenPriceResponse.isSuccess,
-		inputChainNativeTokenPriceResponse.isFetching,
-		inputToken,
-	]);
-
-	useEffect(() => {
-		if (
-			(!balanceResponse.isSuccess || inputToken.chainId === 0,
-			inputChainId === 0)
-		)
-			return;
-
-		const tokenBalance = getUserBalanceOfChainId(
-			balanceResponse,
-			inputChainId
-		);
-		if (!tokenBalance[inputToken.address])
-			dispatch(setInputTokenBalance(0));
-		dispatch(setInputTokenBalance(tokenBalance[inputToken.address]));
-	}, [balanceResponse.isSuccess, balanceResponse.isFetching, inputToken]);
-
-	useEffect(() => {
-		if (!inputTokenPriceResponse.isSuccess || inputToken.chainId === 0)
-			return;
-
-		const price: number =
-			inputTokenPriceResponse.data?.data?.result.tokenPrice;
-		dispatch(setInputTokenPrice(price));
-	}, [
-		inputTokenPriceResponse.isSuccess,
-		inputTokenPriceResponse.isFetching,
-		inputToken,
-	]);
 
 	return (
 		<div

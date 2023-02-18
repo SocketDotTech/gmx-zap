@@ -16,33 +16,27 @@ import { getSupportedChains } from "../../services";
 
 export const ChainsSelect: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const chainsResponse = useQuery(["chains"], getSupportedChains, {
-		refetchOnWindowFocus: false,
-	});
 	const { inputChainId, outputChainId } = useAppSelector(
 		(state) => state.chains
 	);
 
 	const [swapEnable, setSwapEnable] = useState(false);
 
-	useEffect(() => {
-		if (
-			Object.keys(chainsResponse).length === 0 ||
-			!chainsResponse.isSuccess
-		)
-			return;
+	useQuery(["chains"], getSupportedChains, {
+		onSuccess: (data: any) => {
+			const { chainsByChainId, fromChainsList, toChainsList } =
+				getChainDataByChainId(data);
 
-		const { chainsByChainId, fromChainsList, toChainsList } =
-			getChainDataByChainId(chainsResponse);
-
-		dispatch(setChainsInfo(chainsByChainId));
-		dispatch(setInputChainsList(fromChainsList));
-		dispatch(setOutputChainsList(toChainsList));
-		if (inputChainId === 0)
-			dispatch(setInputChainId(fromChainsList[0].chainId));
-		if (outputChainId === 0)
-			dispatch(setOutputChainId(toChainsList[0].chainId));
-	}, [chainsResponse.isSuccess]);
+			dispatch(setChainsInfo(chainsByChainId));
+			dispatch(setInputChainsList(fromChainsList));
+			dispatch(setOutputChainsList(toChainsList));
+			if (inputChainId === 0)
+				dispatch(setInputChainId(fromChainsList[0].chainId));
+			if (outputChainId === 0)
+				dispatch(setOutputChainId(toChainsList[0].chainId));
+		},
+		refetchOnWindowFocus: false,
+	});
 
 	useEffect(() => {
 		if (swapChainsCompatible(outputChainId, inputChainId))

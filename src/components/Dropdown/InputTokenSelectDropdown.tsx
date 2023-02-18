@@ -36,15 +36,22 @@ export const InputTokenSelectDropdown = ({
 	const [filteredResults, setFilteredResults] = useState(moreOptions);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isAddress, setIsAddress] = useState(false);
+	const [tokenBalance, setTokenBalance] = useState<{
+		[x: string]: number;
+	}>({});
 	const clickAwayRef = useRef<HTMLDivElement>(null);
 
-	const balanceResponse = useQuery(
-		["userTokenBalances"],
+	useQuery(
+		["userTokenBalances", address],
 		() =>
 			getUserTokenBalances({
 				userAddress: address!,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const tokenBalance = getUserBalanceOfChainId(data, chainId);
+				setTokenBalance(tokenBalance);
+			},
 			enabled: !!address,
 		}
 	);
@@ -104,8 +111,6 @@ export const InputTokenSelectDropdown = ({
 		localStorage.setItem("customTokens", JSON.stringify(cust));
 		setMoreOptions([tokenDetail, ...moreOptions]);
 	};
-
-	const tokenBalance = getUserBalanceOfChainId(balanceResponse, chainId);
 
 	useClickAway(clickAwayRef, () => onHide(true));
 

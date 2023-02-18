@@ -58,16 +58,11 @@ export const BridgeTokens = ({
 			.toString() +
 		" " +
 		inputToken.symbol;
-	const outputAmountSimplified =
-		(parseFloat(route.toAmount) / 10 ** outputToken.decimals)
-			.toFixed(4)
-			.toString() +
-		" " +
-		outputToken.symbol;
+
 	const bridgeName = route.usedBridgeNames[0];
 
-	const allowanceAmount: queryResponseObj = useQuery(
-		["checkAllowance"],
+	useQuery(
+		["checkAllowance", allowanceTarget, sourceTxHash],
 		() =>
 			getAllowanceDetail({
 				chainId: inputChainId.toString(),
@@ -76,6 +71,22 @@ export const BridgeTokens = ({
 				tokenAddress: inputToken.address,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const allowanceValue = parseInt(data?.data?.result?.value);
+				if (
+					minimumApprovalAmount != null &&
+					parseInt(minimumApprovalAmount) > allowanceValue
+				) {
+					setDisabledBridgeBtn(true);
+					setHideApproveBtn(false);
+					setHideBridgeBtn(false);
+				} else if (
+					minimumApprovalAmount != null &&
+					parseInt(minimumApprovalAmount) <= allowanceValue
+				) {
+					setHideBridgeBtn(false);
+				}
+			},
 			enabled: !!(allowanceTarget !== null && sourceTxHash === ""),
 		}
 	);
@@ -120,27 +131,6 @@ export const BridgeTokens = ({
 			}
 		}
 	}, [bridgeStatus.isSuccess, bridgeStatus.isFetching, destinationTxHash]);
-
-	useEffect(() => {
-		if (allowanceAmount.isSuccess) {
-			const allowanceValue = parseInt(
-				allowanceAmount.data?.data?.result?.value
-			);
-			if (
-				minimumApprovalAmount != null &&
-				parseInt(minimumApprovalAmount) > allowanceValue
-			) {
-				setDisabledBridgeBtn(true);
-				setHideApproveBtn(false);
-				setHideBridgeBtn(false);
-			} else if (
-				minimumApprovalAmount != null &&
-				parseInt(minimumApprovalAmount) <= allowanceValue
-			) {
-				setHideBridgeBtn(false);
-			}
-		}
-	}, [allowanceAmount.isSuccess, allowanceAmount.isFetching]);
 
 	// run this effect on only first mount of this component
 	useEffect(() => {

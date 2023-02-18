@@ -9,7 +9,7 @@ import {
 	ChainDetail,
 	ChainsDetailObj,
 	Obj,
-	queryResponseObj,
+	responseObj,
 	TokenDetail,
 } from "../types";
 import { expandDecimals } from "./numbers";
@@ -21,7 +21,7 @@ export const getChainDataByChainId = (
 	fromChainsList: Array<ChainDetail>;
 	toChainsList: Array<ChainDetail>;
 } => {
-	const data = chains.data?.data?.result;
+	const data = chains?.data?.result;
 	const chainsByChainId: any = {};
 	const fromChainsList: Array<ChainDetail> = [];
 	const toChainsList: Array<ChainDetail> = [];
@@ -57,12 +57,12 @@ export const getChainDataByChainId = (
 };
 
 export const getFromTokensListFromResponse = (
-	tokensList: queryResponseObj
+	tokensList: responseObj
 ): {
 	fromTokensList: TokenDetail[];
 	inputTokenInfo: TokenDetail;
 } => {
-	const data: any = tokensList.data?.data?.result;
+	const data: any = tokensList?.data?.result;
 	const tokenList: TokenDetail[] = data;
 	let inputToken: TokenDetail = tokenList[0];
 
@@ -72,13 +72,13 @@ export const getFromTokensListFromResponse = (
 };
 
 export const getToTokensListFromResponse = (
-	tokensList: queryResponseObj,
+	tokensList: responseObj,
 	outputChainId: number
 ): {
 	toTokensList: TokenDetail[];
 	outputTokenInfo: TokenDetail;
 } => {
-	const data: any = tokensList.data?.data?.result;
+	const data: any = tokensList?.data?.result;
 	const tokenList: TokenDetail[] = data.filter((token: any) =>
 		glpSupportedTokens[outputChainId].includes(token.symbol)
 	);
@@ -93,9 +93,9 @@ export const getUserBalanceOfChainId = (
 	balances: any,
 	chainId: number
 ): any => {
-	if (!balances.isSuccess) return {};
+	if (!balances) return {};
 
-	const data = balances.data?.data?.result;
+	const data = balances?.data?.result;
 	const balanceByChainId: Obj = {};
 	data.map((balance: any) => {
 		if (balance.chainId == chainId) {
@@ -106,11 +106,11 @@ export const getUserBalanceOfChainId = (
 };
 
 export const getTokenPriceFromResponse = (
-	tokenPrice: queryResponseObj
+	tokenPrice: responseObj
 ): {
 	tokenPriceBN: BigNumber;
 } => {
-	const data: any = tokenPrice.data?.data?.result.tokenPrice.toString();
+	const data: any = tokenPrice?.data?.result.tokenPrice.toString();
 	const integerPrice = data.split(".")[0];
 	const tokenPriceBN: BigNumber = BigNumber.from(integerPrice).mul(
 		expandDecimals(1, USD_DECIMALS)

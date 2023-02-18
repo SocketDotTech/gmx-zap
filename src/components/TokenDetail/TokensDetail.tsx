@@ -19,7 +19,7 @@ import {
 	getTokenPriceByTokenAddress,
 	getToTokenList,
 } from "../../services";
-import { NativeTokenDetail, queryResponseObj } from "../../types";
+import { NativeTokenDetail } from "../../types";
 import { InputTokenDetail } from "./InputTokenDetail";
 import { ReceiveGlpDetail } from "./ReceiveGlpDetail";
 
@@ -30,7 +30,8 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 		(state) => state.chains
 	);
 	const { inputToken, outputToken } = useAppSelector((state) => state.tokens);
-	const fromTokenListResponse: queryResponseObj = useQuery(
+
+	useQuery(
 		["fromTokenList", inputChainId],
 		() =>
 			getFromTokenList({
@@ -39,12 +40,20 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 				isShortList: true,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const { fromTokensList, inputTokenInfo } =
+					getFromTokensListFromResponse(data);
+
+				dispatch(setFromTokensList(fromTokensList));
+				if (inputToken.chainId !== inputTokenInfo.chainId)
+					dispatch(setInputToken(inputTokenInfo));
+			},
 			enabled: !!inputChainId,
 			refetchOnWindowFocus: true,
 		}
 	);
 
-	const toTokenListResponse: queryResponseObj = useQuery(
+	useQuery(
 		["toTokenList", outputChainId],
 		() =>
 			getToTokenList({
@@ -53,12 +62,20 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 				isShortList: true,
 			}),
 		{
+			onSuccess: (data: any) => {
+				const { toTokensList, outputTokenInfo } =
+					getToTokensListFromResponse(data, outputChainId);
+
+				dispatch(setToTokensList(toTokensList));
+				if (outputToken.chainId !== outputTokenInfo.chainId)
+					dispatch(setOutputToken(outputTokenInfo));
+			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
 		}
 	);
 
-	const nativeTokenPriceResponse: queryResponseObj = useQuery(
+	useQuery(
 		["nativeTokenPrice", outputChainId],
 		() =>
 			getTokenPriceByTokenAddress({
@@ -66,66 +83,23 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 				tokenAddress: NATIVE_TOKEN[outputChainId]["address"],
 			}),
 		{
+			onSuccess: (data: any) => {
+				const { tokenPriceBN } = getTokenPriceFromResponse(data);
+				const nativeTokenDetail: NativeTokenDetail = {
+					name: NATIVE_TOKEN[outputChainId]["name"],
+					price: tokenPriceBN,
+					symbol: NATIVE_TOKEN[outputChainId]["symbol"],
+					address: NATIVE_TOKEN[outputChainId]["address"],
+				};
+
+				dispatch(setNativeToken(nativeTokenDetail));
+			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
 			refetchInterval: 5000,
 			refetchIntervalInBackground: false,
 		}
 	);
-
-	useEffect(() => {
-		if (!nativeTokenPriceResponse.isSuccess || outputChainId === 0) return;
-
-		const { tokenPriceBN } = getTokenPriceFromResponse(
-			nativeTokenPriceResponse
-		);
-		const nativeTokenDetail: NativeTokenDetail = {
-			name: NATIVE_TOKEN[outputChainId]["name"],
-			price: tokenPriceBN,
-			symbol: NATIVE_TOKEN[outputChainId]["symbol"],
-			address: NATIVE_TOKEN[outputChainId]["address"],
-		};
-
-		dispatch(setNativeToken(nativeTokenDetail));
-	}, [
-		nativeTokenPriceResponse.isSuccess,
-		nativeTokenPriceResponse.isFetching,
-		outputChainId,
-	]);
-
-	useEffect(() => {
-		if (
-			Object.keys(fromTokenListResponse).length === 0 ||
-			!fromTokenListResponse.isSuccess ||
-			inputChainId === 0
-		)
-			return;
-
-		const { fromTokensList, inputTokenInfo } =
-			getFromTokensListFromResponse(fromTokenListResponse);
-
-		dispatch(setFromTokensList(fromTokensList));
-		if (inputToken.chainId !== inputTokenInfo.chainId)
-			dispatch(setInputToken(inputTokenInfo));
-	}, [fromTokenListResponse.isSuccess, inputChainId]);
-
-	useEffect(() => {
-		if (
-			Object.keys(toTokenListResponse).length === 0 ||
-			!toTokenListResponse.isSuccess ||
-			outputChainId === 0
-		)
-			return;
-
-		const { toTokensList, outputTokenInfo } = getToTokensListFromResponse(
-			toTokenListResponse,
-			outputChainId
-		);
-
-		dispatch(setToTokensList(toTokensList));
-		if (outputToken.chainId !== outputTokenInfo.chainId)
-			dispatch(setOutputToken(outputTokenInfo));
-	}, [toTokenListResponse.isSuccess, outputChainId]);
 
 	return (
 		<div>

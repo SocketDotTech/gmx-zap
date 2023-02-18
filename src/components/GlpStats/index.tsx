@@ -39,6 +39,24 @@ export const GlpStats = () => {
 	const [glpWalletBalanceUsd, setGlpWalletBalanceUsd] =
 		useState<BigNumber>(ZERO_BIG_NUMBER);
 
+	useQuery(
+		["glpPrice", outputChainId],
+		() =>
+			getGlpPrice({
+				chainId: outputChainId,
+			}),
+		{
+			onSuccess: (data: any) => {
+				const { glpPrice } = data;
+				dispatch(setGlpPrice(glpPrice));
+			},
+			enabled: !!outputChainId,
+			refetchOnWindowFocus: true,
+			refetchInterval: 2000,
+			refetchIntervalInBackground: false,
+		}
+	);
+
 	const glpTrackerAprResponse = useQuery(
 		["glpTrackerApr", outputChainId, address, glpPrice, nativeToken],
 		() =>
@@ -56,20 +74,6 @@ export const GlpStats = () => {
 			),
 			refetchOnWindowFocus: true,
 			refetchInterval: 3000,
-			refetchIntervalInBackground: false,
-		}
-	);
-
-	const glpPriceResponse = useQuery(
-		["glpPrice", outputChainId],
-		() =>
-			getGlpPrice({
-				chainId: outputChainId,
-			}),
-		{
-			enabled: !!outputChainId,
-			refetchOnWindowFocus: true,
-			refetchInterval: 2000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -102,17 +106,6 @@ export const GlpStats = () => {
 			refetchIntervalInBackground: false,
 		}
 	);
-
-	useEffect(() => {
-		if (!glpPriceResponse.isSuccess) return;
-		const { glpPrice } = glpPriceResponse.data;
-
-		dispatch(setGlpPrice(glpPrice));
-	}, [
-		glpPriceResponse.isSuccess,
-		glpPriceResponse.isFetching,
-		outputChainId,
-	]);
 
 	useEffect(() => {
 		if (!glpBalanceResponse.isSuccess || glpPrice === ZERO_BIG_NUMBER)

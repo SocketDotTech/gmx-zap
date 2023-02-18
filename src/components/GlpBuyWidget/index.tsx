@@ -43,7 +43,7 @@ export const GlpBuyWidget = () => {
 	const { route, slippage } = useAppSelector((state) => state.route);
 
 	const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
-	const [proceedBtnText, setProceedBtnTest] = useState<string>("Proceed");
+	const [proceedBtnText, setProceedBtnText] = useState<string>("Proceed");
 	const [minGlpReceived, setMinGlpReceived] = useState<string>("");
 	const [tabIndex, setTabIndex] = useState<number>(0);
 	const [minGlpAmount, setMinGlpAmount] =
@@ -95,36 +95,36 @@ export const GlpBuyWidget = () => {
 
 	useEffect(() => {
 		if (!address) {
-			setProceedBtnTest("Connect Wallet");
+			setProceedBtnText("Connect Wallet");
 			setProceedBtnDisabled(true);
 		} else if ((parseFloat(inputTokenAmount) || 0) == 0) {
-			setProceedBtnTest("Enter Input Token Amount");
+			setProceedBtnText("Enter Input Token Amount");
 			setProceedBtnDisabled(true);
 		} else if (quoteListResponse.isLoading) {
-			setProceedBtnTest("Fetching Route...");
+			setProceedBtnText("Fetching Route...");
 			setProceedBtnDisabled(true);
 		} else if (
 			(parseFloat(inputTokenAmount) || 0) > (inputTokenBalance || 0)
 		) {
-			setProceedBtnTest("Not Enough Balance");
+			setProceedBtnText("Not Enough Balance");
 			setProceedBtnDisabled(true);
 		} else if (chain!.id != inputChainId) {
-			setProceedBtnTest(`Switch to ${chainsInfo[inputChainId]["name"]}`);
+			setProceedBtnText(`Switch to ${chainsInfo[inputChainId]["name"]}`);
 			setProceedBtnDisabled(true);
 		} else if (
 			quoteListResponse.isSuccess &&
 			Object.keys(route).length !== 0
 		) {
-			setProceedBtnTest("Proceed");
+			setProceedBtnText("Proceed");
 			setProceedBtnDisabled(false);
 		} else if (
 			quoteListResponse.isSuccess &&
 			Object.keys(route).length === 0
 		) {
-			setProceedBtnTest("No Routes Available");
+			setProceedBtnText("No Routes Available");
 			setProceedBtnDisabled(true);
 		} else {
-			setProceedBtnTest("Loading...");
+			setProceedBtnText("Loading...");
 			setProceedBtnDisabled(true);
 		}
 	}, [
@@ -187,14 +187,14 @@ export const GlpBuyWidget = () => {
 
 	const proceedToFinal = async () => {
 		if (!address) return;
-		setProceedBtnTest("Loading...");
+		setProceedBtnText("Loading...");
 		setProceedBtnDisabled(true);
 
-		const contract = new ethers.Contract(
-			CONTRACTS[outputChainId]["SocketGlpWrapper"],
-			abis.rewardRouterAbi,
-			signer!
-		);
+		// const contract = new ethers.Contract(
+		// 	CONTRACTS[outputChainId]["SocketGlpWrapper"],
+		// 	abis.rewardRouterAbi,
+		// 	signer!
+		// );
 		const method = "buyGlp";
 		console.log([address, outputToken.address, 0, minGlpAmount]);
 		const params = [address, outputToken.address, 0, minGlpAmount];
@@ -263,7 +263,7 @@ export const GlpBuyWidget = () => {
 			setFinalRoute(FINAL_ROUTE);
 			setTabIndex(1);
 		} else {
-			setProceedBtnTest("No Routes Available");
+			setProceedBtnText("No Routes Available");
 			setProceedBtnDisabled(true);
 		}
 	};
