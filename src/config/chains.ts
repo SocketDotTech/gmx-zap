@@ -20,3 +20,15 @@ export const MAX_GAS_PRICE_MAP: {
 } = {
 	[AVALANCHE]: "200000000000", // 200 gwei
 };
+
+export const NATIVE_TOKEN_SYMBOLS: {
+	[x: number]: string;
+} = {
+	[AVALANCHE]: "AVAX",
+	[ARBITRUM]: "ETH",
+	[ETHEREUM]: "ETH",
+	[POLYGON]: "MATIC",
+	[BSC]: "BNB",
+	[OPTIMISM]: "ETH",
+	[FANTOM]: "FTM",
+};

@@ -52,7 +52,7 @@ export const GlpStats = () => {
 			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 2000,
+			refetchInterval: 2000000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -73,7 +73,7 @@ export const GlpStats = () => {
 				nativeToken.price !== ZERO_BIG_NUMBER
 			),
 			refetchOnWindowFocus: true,
-			refetchInterval: 3000,
+			refetchInterval: 3000000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -88,7 +88,7 @@ export const GlpStats = () => {
 		{
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 5000,
+			refetchInterval: 5000000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -102,7 +102,7 @@ export const GlpStats = () => {
 		{
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 2000,
+			refetchInterval: 2000000,
 			refetchIntervalInBackground: false,
 		}
 	);

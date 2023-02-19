@@ -11,6 +11,7 @@ type Props = {
 	sort: "output" | "gas" | "time";
 	singleTxOnly: boolean;
 	recipient?: string;
+	bridgeWithGas?: boolean;
 	includeBridges?: Array<string>;
 	destinationPayload?: string;
 	destinationGasLimit?: string;
@@ -26,12 +27,13 @@ const getQuote = ({
 	uniqueRoutesPerBridge = true,
 	sort,
 	singleTxOnly,
+	bridgeWithGas = false,
 	recipient = userAddress,
 	includeBridges = [],
 	destinationPayload,
 	destinationGasLimit,
 }: Props) => {
-	let path = `/quote?fromChainId=${fromChainId}&fromTokenAddress=${fromTokenAddress}&toChainId=${toChainId}&toTokenAddress=${toTokenAddress}&fromAmount=${fromAmount}&userAddress=${userAddress}&uniqueRoutesPerBridge=${uniqueRoutesPerBridge}&sort=${sort}&singleTxOnly=${singleTxOnly}&recipient=${recipient}`;
+	let path = `/quote?fromChainId=${fromChainId}&fromTokenAddress=${fromTokenAddress}&toChainId=${toChainId}&toTokenAddress=${toTokenAddress}&fromAmount=${fromAmount}&userAddress=${userAddress}&uniqueRoutesPerBridge=${uniqueRoutesPerBridge}&sort=${sort}&bridgeWithGas=${bridgeWithGas}&singleTxOnly=${singleTxOnly}&recipient=${recipient}`;
 	includeBridges.forEach(
 		(bridge: string) => (path += `&includeBridges=${bridge}`)
 	);

@@ -3,12 +3,14 @@ import { chainsReducer } from "../slices";
 import { tokensReducer } from "../slices";
 import { glpReducer } from "../slices";
 import { routeReducer } from "../slices";
+import { refuelReducer } from "../slices";
 
 export const store = configureStore({
 	reducer: {
 		chains: chainsReducer,
 		tokens: tokensReducer,
 		glp: glpReducer,
+		refuel: refuelReducer,
 		route: routeReducer,
 	},
 	middleware: (getDefaultMiddleware) =>

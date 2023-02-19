@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import { BigNumber } from "ethers";
+import React from "react";
 import { useQuery } from "react-query";
-import { NATIVE_TOKEN } from "../../config";
+import { NATIVE_TOKEN, NATIVE_TOKEN_SYMBOLS } from "../../config";
 import {
+	formatAmount,
 	getFromTokensListFromResponse,
 	getTokenPriceFromResponse,
 	getToTokensListFromResponse,
-} from "../../helpers/DataHelper";
+} from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
 	setFromTokensList,
@@ -30,6 +32,9 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 		(state) => state.chains
 	);
 	const { inputToken, outputToken } = useAppSelector((state) => state.tokens);
+	const { enabledRefuel, fromAmount, toAmount } = useAppSelector(
+		(state) => state.refuel
+	);
 
 	useQuery(
 		["fromTokenList", inputChainId],
@@ -104,10 +109,22 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 	return (
 		<div>
 			<InputTokenDetail />
+			{enabledRefuel && fromAmount != "" && inputChainId != 0 && (
+				<p className="text-pink-600 text-sm font-semibold">
+					+{formatAmount(BigNumber.from(fromAmount), 18, 3)}{" "}
+					{NATIVE_TOKEN_SYMBOLS[inputChainId]} for Refuel
+				</p>
+			)}
 			<div className="pb-3"></div>
 			{/* <OutputTokenDetail />
 			<div className="pb-3"></div> */}
 			<ReceiveGlpDetail glpReceived={glpReceived} />
+			{enabledRefuel && toAmount != "" && outputChainId != 0 && (
+				<p className="text-pink-600 text-sm font-semibold">
+					+{formatAmount(BigNumber.from(toAmount), 18, 3)}{" "}
+					{NATIVE_TOKEN_SYMBOLS[outputChainId]} for Refuel
+				</p>
+			)}
 		</div>
 	);
 };

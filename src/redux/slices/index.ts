@@ -9,3 +9,6 @@ export * from "./glpSlice";
 
 export { default as routeReducer } from "./routeSlice";
 export * from "./routeSlice";
+
+export { default as refuelReducer } from "./refuelSlice";
+export * from "./refuelSlice";

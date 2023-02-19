@@ -5,5 +5,6 @@ export * from "./Dropdown";
 export * from "./GlpBuyWidget";
 export * from "./GlpStats";
 export * from "./Header";
+export * from "./RefuelBox";
 export * from "./TokenDetail";
 export * from "./UserSettings";

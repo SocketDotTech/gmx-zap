@@ -3,12 +3,20 @@ import { RequestProps, postReq } from "../../api";
 type Props = {
 	route: any;
 	destinationCallData?: any;
+	refuel?: any;
 };
 
-const getRouteTransactionData = ({ route, destinationCallData }: Props) => {
+const getRouteTransactionData = ({
+	route,
+	destinationCallData,
+	refuel,
+}: Props) => {
 	let body: any = { route: route };
 	if (Object.keys(destinationCallData).length !== 0) {
 		body["destinationCallData"] = destinationCallData;
+	}
+	if (refuel) {
+		body["refuel"] = refuel;
 	}
 	const obj: RequestProps = {
 		path: `/build-tx`,

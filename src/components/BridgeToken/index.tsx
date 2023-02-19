@@ -15,6 +15,7 @@ let bridgeStatus: queryResponseObj;
 
 type BridgeTokensProps = {
 	route: any;
+	refuel: any;
 	destinationCallData: any;
 	glpReceived: string;
 	setTabIndex: (tab: number) => void;
@@ -22,6 +23,7 @@ type BridgeTokensProps = {
 
 export const BridgeTokens = ({
 	route,
+	refuel,
 	destinationCallData,
 	glpReceived,
 	setTabIndex,
@@ -29,10 +31,11 @@ export const BridgeTokens = ({
 	const { address } = useAccount();
 	const { data: signer } = useSigner();
 	const provider = useProvider();
-	const { inputToken, outputToken } = useAppSelector((state) => state.tokens);
+	const { inputToken } = useAppSelector((state) => state.tokens);
 	const { inputChainId, outputChainId, chainsInfo } = useAppSelector(
 		(state) => state.chains
 	);
+	const { enabledRefuel } = useAppSelector((state) => state.refuel);
 
 	const [loading, setLoading] = useState(true);
 	const [allowanceTarget, setAllowanceTarget] = useState(null);
@@ -135,10 +138,18 @@ export const BridgeTokens = ({
 	// run this effect on only first mount of this component
 	useEffect(() => {
 		if (isFirstMount.current) {
-			routeTxData.mutate({
-				route: route,
-				destinationCallData: destinationCallData,
-			});
+			if (enabledRefuel) {
+				routeTxData.mutate({
+					route: route,
+					refuel: refuel,
+					destinationCallData: destinationCallData,
+				});
+			} else {
+				routeTxData.mutate({
+					route: route,
+					destinationCallData: destinationCallData,
+				});
+			}
 			isFirstMount.current = false;
 		}
 	}, [isFirstMount]);

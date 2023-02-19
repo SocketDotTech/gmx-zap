@@ -13,13 +13,19 @@ import {
 } from "../../config";
 import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { setRoute } from "../../redux";
+import {
+	setRefuelDetail,
+	setRefuelFromAmount,
+	setRefuelToAmount,
+	setRoute,
+} from "../../redux";
 import { getQuote } from "../../services";
 import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
 import { UserSettings } from "../UserSettings";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { RefuelBox } from "../RefuelBox";
 
 let quoteListResponse: any;
 const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
@@ -41,6 +47,7 @@ export const GlpBuyWidget = () => {
 		(state) => state.chains
 	);
 	const { route, slippage } = useAppSelector((state) => state.route);
+	const { enabledRefuel } = useAppSelector((state) => state.refuel);
 
 	const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
 	const [proceedBtnText, setProceedBtnText] = useState<string>("Proceed");
@@ -49,6 +56,7 @@ export const GlpBuyWidget = () => {
 	const [minGlpAmount, setMinGlpAmount] =
 		useState<BigNumber>(ZERO_BIG_NUMBER);
 	const [finalRoute, setFinalRoute] = useState<any>({});
+	const [finalRefuel, setFinalRefuel] = useState<any>({});
 	const [destinationCallData, setDestinationCallData] = useState<any>({});
 
 	quoteListResponse = useQuery(
@@ -57,7 +65,7 @@ export const GlpBuyWidget = () => {
 			inputToken.address,
 			outputToken.address,
 			inputTokenAmount,
-			tabIndex,
+			enabledRefuel,
 		],
 		() => {
 			return getQuote({
@@ -75,6 +83,7 @@ export const GlpBuyWidget = () => {
 				userAddress: address || "",
 				uniqueRoutesPerBridge: true,
 				sort: "output",
+				bridgeWithGas: enabledRefuel,
 				includeBridges: ["stargate"],
 				singleTxOnly: true,
 				recipient: CONTRACTS[outputChainId]["SocketGlpWrapper"],
@@ -148,8 +157,13 @@ export const GlpBuyWidget = () => {
 		let route = {};
 		if (result?.routes.length > 0) {
 			route = result?.routes[0];
+			dispatch(setRoute(route));
 		}
-		dispatch(setRoute(route));
+		if (result?.refuel) {
+			dispatch(setRefuelDetail(result?.refuel));
+			dispatch(setRefuelFromAmount(result?.refuel?.fromAmount));
+			dispatch(setRefuelToAmount(result?.refuel?.toAmount));
+		}
 	}, [
 		quoteListResponse.isSuccess,
 		quoteListResponse.isFetching,
@@ -246,19 +260,24 @@ export const GlpBuyWidget = () => {
 			uniqueRoutesPerBridge: true,
 			sort: "output",
 			includeBridges: ["stargate"],
+			bridgeWithGas: enabledRefuel,
 			singleTxOnly: true,
 			recipient: CONTRACTS[outputChainId]["SocketGlpWrapper"],
 			destinationPayload: destinationPayload,
 			destinationGasLimit: destinationGasLimit.toString(),
 		});
 
-		let FINAL_ROUTE;
 		if (finalRoute.data?.result?.routes.length > 0) {
-			FINAL_ROUTE = finalRoute.data?.result?.routes[0];
+			const FINAL_ROUTE = finalRoute.data?.result?.routes[0];
 			const DESTINATION_CALLDATA =
 				finalRoute.data?.result?.destinationCallData;
-			console.log(FINAL_ROUTE);
-			console.log(DESTINATION_CALLDATA);
+			if (enabledRefuel) {
+				const FINAL_REFUEL = finalRoute.data?.result?.refuel;
+				if (FINAL_REFUEL) setFinalRefuel(FINAL_REFUEL);
+				console.log("FINAL REFUEL: ", FINAL_REFUEL);
+			}
+			console.log("FINAL ROUTE: ", FINAL_ROUTE);
+			console.log("DESTINATION CALLDATA: ", DESTINATION_CALLDATA);
 			setDestinationCallData(DESTINATION_CALLDATA);
 			setFinalRoute(FINAL_ROUTE);
 			setTabIndex(1);
@@ -283,6 +302,10 @@ export const GlpBuyWidget = () => {
 						<div>
 							<TokensDetail glpReceived={minGlpReceived} />
 						</div>
+
+						{/* <div className="pb-3"></div>
+						<RefuelBox /> */}
+
 						<div className="pb-3"></div>
 						{quoteListResponse.isFetching && (
 							<>
@@ -416,6 +439,7 @@ export const GlpBuyWidget = () => {
 						<BridgeTokens
 							setTabIndex={setTabIndex}
 							route={finalRoute}
+							refuel={finalRefuel}
 							glpReceived={minGlpReceived}
 							destinationCallData={destinationCallData}
 						/>
