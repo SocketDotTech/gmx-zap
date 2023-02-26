@@ -38,3 +38,4 @@ export const isValidSlippage = (ch: any) => {
 export * from "./numbers";
 export * from "./gas";
 export * from "./DataHelper";
+export * from "./localStorageSave";

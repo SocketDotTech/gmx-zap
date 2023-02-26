@@ -9,9 +9,11 @@ import {
 
 import { queryResponseObj } from "../../types";
 import { PrimaryButton } from "../Button";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useAccount, useProvider, useSigner } from "wagmi";
-let bridgeStatus: queryResponseObj;
+import { saveTxDetails } from "../../helpers";
+import { setTxDetails } from "../../redux";
+// let bridgeStatus: queryResponseObj;
 
 type BridgeTokensProps = {
 	route: any;
@@ -29,6 +31,7 @@ export const BridgeTokens = ({
 	setTabIndex,
 }: BridgeTokensProps) => {
 	const { address } = useAccount();
+	const dispatch = useAppDispatch();
 	const { data: signer } = useSigner();
 	const provider = useProvider();
 	const { inputToken } = useAppSelector((state) => state.tokens);
@@ -94,7 +97,7 @@ export const BridgeTokens = ({
 		}
 	);
 
-	bridgeStatus = useQuery(
+	const bridgeStatus: queryResponseObj = useQuery(
 		["bridgeStatus", sourceTxHash],
 		() =>
 			getBridgeStatus({
@@ -103,8 +106,29 @@ export const BridgeTokens = ({
 				toChainId: outputChainId.toString(),
 			}),
 		{
-			enabled: !!(sourceTxHash !== "" && destinationTxHash == ""),
-			refetchInterval: 20000,
+			enabled: !!(
+				sourceTxHash !== "" &&
+				destinationTxHash == "" &&
+				address
+			),
+			onSuccess: async (data) => {
+				const response: any = data?.data?.result;
+				const glpDetail = {
+					symbol: "GLP",
+					amount: glpReceived,
+				};
+				const prevTxDetails = await saveTxDetails(
+					address!,
+					sourceTxHash,
+					response?.destinationTxStatus == "COMPLETED" ? true : false,
+					response,
+					glpDetail,
+					inputToken,
+					route.fromAmount
+				);
+				dispatch(setTxDetails({ prevTxDetails: prevTxDetails }));
+			},
+			// refetchInterval: 20000,
 		}
 	);
 

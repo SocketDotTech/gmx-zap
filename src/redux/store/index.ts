@@ -1,9 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { chainsReducer } from "../slices";
-import { tokensReducer } from "../slices";
-import { glpReducer } from "../slices";
-import { routeReducer } from "../slices";
-import { refuelReducer } from "../slices";
+import {
+	chainsReducer,
+	glpReducer,
+	refuelReducer,
+	routeReducer,
+	tokensReducer,
+	txDetailsReducer,
+} from "../slices";
 
 export const store = configureStore({
 	reducer: {
@@ -12,6 +15,7 @@ export const store = configureStore({
 		glp: glpReducer,
 		refuel: refuelReducer,
 		route: routeReducer,
+		txDetails: txDetailsReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

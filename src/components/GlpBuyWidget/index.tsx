@@ -23,9 +23,10 @@ import { getQuote } from "../../services";
 import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
-import { UserSettings } from "../UserSettings";
+import { WidgetHeader } from "../WidgetHeader";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { RefuelBox } from "../RefuelBox";
+import { TxnHistory } from "../TxnHistory";
+// import { RefuelBox } from "../RefuelBox";
 
 let quoteListResponse: any;
 const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
@@ -294,7 +295,7 @@ export const GlpBuyWidget = () => {
 				{tabIndex === 0 && (
 					<>
 						<div className="pb-3">
-							<UserSettings />
+							<WidgetHeader setTabIndex={setTabIndex} />
 						</div>
 						<div className="pb-3">
 							<ChainsSelect />
@@ -445,6 +446,7 @@ export const GlpBuyWidget = () => {
 						/>
 					</>
 				)}
+				{tabIndex === 2 && <TxnHistory setTabIndex={setTabIndex} />}
 			</div>
 		</>
 	);

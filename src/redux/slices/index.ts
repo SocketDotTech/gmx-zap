@@ -12,3 +12,6 @@ export * from "./routeSlice";
 
 export { default as refuelReducer } from "./refuelSlice";
 export * from "./refuelSlice";
+
+export { default as txDetailsReducer } from "./txDetailsSlice";
+export * from "./txDetailsSlice";
