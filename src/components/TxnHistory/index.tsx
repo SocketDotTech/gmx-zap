@@ -159,7 +159,9 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 									))}
 								{selectedHistory == 0 &&
 									(!pendingTxn || pendingTxn.length == 0) && (
-										<div>No pending transactions</div>
+										<div className="text-zinc-400 font-medium">
+											No pending transactions
+										</div>
 									)}
 								{selectedHistory == 1 &&
 									completedTxn &&
