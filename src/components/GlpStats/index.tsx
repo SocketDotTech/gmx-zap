@@ -52,7 +52,7 @@ export const GlpStats = () => {
 			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 2000000,
+			refetchInterval: 2000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -73,7 +73,7 @@ export const GlpStats = () => {
 				nativeToken.price !== ZERO_BIG_NUMBER
 			),
 			refetchOnWindowFocus: true,
-			refetchInterval: 3000000,
+			refetchInterval: 3000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -88,7 +88,7 @@ export const GlpStats = () => {
 		{
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 5000000,
+			refetchInterval: 5000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -102,7 +102,7 @@ export const GlpStats = () => {
 		{
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
-			refetchInterval: 2000000,
+			refetchInterval: 2000,
 			refetchIntervalInBackground: false,
 		}
 	);
@@ -164,23 +164,28 @@ export const GlpStats = () => {
 		<>
 			{/* GLP Stats */}
 			<div className="max-w-[44.5rem] bg-[#17192E] w-full mr-4 rounded divide-y divide-[#23263b] border border-[#23263b] max-[900px]:min-w-full max-[900px]:mb-7">
-				<div className="flex p-4">
-					<img
-						src={`assets/${
-							outputChainId == AVALANCHE
-								? "ic_glp_avax.svg"
-								: "ic_glp_arbitrum.svg"
-						}`}
-						alt="IC Glp Logo"
-						className="w-10 h-10"
-					/>
-					<div className="pl-1">
-						<div className="text-base text-white font-semibold leading-5">
-							GLP
+				<div className="flex justify-between">
+					<div className="flex p-4">
+						<img
+							src={`assets/${
+								outputChainId == AVALANCHE
+									? "ic_glp_avax.svg"
+									: "ic_glp_arbitrum.svg"
+							}`}
+							alt="IC Glp Logo"
+							className="w-10 h-10"
+						/>
+						<div className="pl-1">
+							<div className="text-base text-white font-semibold leading-5">
+								GLP
+							</div>
+							<div className="text-xs text-zinc-500 font-medium">
+								{outputChainId == AVALANCHE ? "AVAX" : "ARBI"}
+							</div>
 						</div>
-						<div className="text-xs text-zinc-500 font-medium">
-							{outputChainId == AVALANCHE ? "AVAX" : "ARBI"}
-						</div>
+					</div>
+					<div className="text-xs text-center h-fit p-2 mt-2 mr-2 rounded bg-[#2F4F4F] text-white">
+						This data is updated every 5 seconds
 					</div>
 				</div>
 				<div className="p-4">

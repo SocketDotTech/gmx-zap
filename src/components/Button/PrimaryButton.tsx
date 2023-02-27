@@ -7,6 +7,7 @@ type Props = {
 	loading?: boolean;
 	textColorPrimary?: string;
 	disabled?: boolean;
+	completed?: boolean;
 	onClick?: () => void;
 };
 
@@ -17,12 +18,16 @@ export const PrimaryButton = ({
 	loading = false,
 	textColorPrimary = "#fff",
 	disabled = false,
+	completed = false,
 	onClick,
 }: Props) => {
 	return (
 		<button
 			className="px-4 py-4 disabled:opacity-75 disabled:cursor-not-allowed text-base font-semibold w-full rounded"
-			style={{ backgroundColor: bgColor, width: width }}
+			style={{
+				backgroundColor: completed ? "gray" : bgColor,
+				width: width,
+			}}
 			disabled={disabled}
 			onClick={onClick}
 		>

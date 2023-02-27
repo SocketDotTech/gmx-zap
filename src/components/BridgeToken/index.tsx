@@ -314,8 +314,8 @@ export const BridgeTokens = ({
 			<div className="text-white text-xl font-medium">Bridge Info</div>
 			<div className="text-zinc-400 test-base font-medium py-1">
 				{inputAmountSimplified} on {chainsInfo[inputChainId]["name"]} to{" "}
-				{glpReceived} GLP on {chainsInfo[outputChainId]["name"]} via{" "}
-				{bridgeName} bridge
+				{glpReceived} GLP on {chainsInfo[outputChainId]["name"]}
+				{/* via{" "}{bridgeName} bridge */}
 			</div>
 			{loading && (
 				<div className="text-white text-base font-medium mt-4 mb-4 py-5 text-center">
@@ -358,6 +358,7 @@ export const BridgeTokens = ({
 							bgColor={"#2E3FD9"}
 							disabled={disabledApproveBtn}
 							onClick={handleApprove}
+							completed={approveBtnText == "Approved"}
 						/>
 					)}
 					{!hideBridgeBtn && (

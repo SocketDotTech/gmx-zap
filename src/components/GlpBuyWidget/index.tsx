@@ -328,14 +328,14 @@ export const GlpBuyWidget = () => {
 							Object.keys(route).length !== 0 && (
 								<>
 									<div className="px-3 py-3.5 bg-[#2F3043] rounded-lg">
-										<div className="flex justify-between">
+										{/* <div className="flex justify-between">
 											<div className="grow text-sm text-zinc-400 font-medium mr-2">
 												Bridge
 											</div>
 											<div className="text-sm text-white font-medium text-right">
 												{route.usedBridgeNames[0]}
 											</div>
-										</div>
+										</div> */}
 										<div className="flex justify-between">
 											<div className="grow text-sm text-zinc-400 font-medium mr-2">
 												Estimated Time

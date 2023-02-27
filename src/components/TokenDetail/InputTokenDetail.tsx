@@ -15,7 +15,6 @@ import {
 	getTokenPriceByTokenAddress,
 	getUserTokenBalances,
 } from "../../services";
-import { queryResponseObj } from "../../types";
 import { InputTokenSelectDropdown } from "../Dropdown";
 import { useDebouncedCallback } from "use-debounce";
 import { NATIVE_TOKEN_ADDRESS } from "../../config";
@@ -146,6 +145,17 @@ export const InputTokenDetail = () => {
 					/>
 				</div>
 				<div
+					onClick={() => {
+						setInputTokenAmountField(inputTokenBalance.toString());
+						debouncedDispatchTokenAmount(
+							inputTokenBalance.toString()
+						);
+					}}
+					className="font-medium mr-2 h-fit text-xs p-1 rounded text-white bg-[#2F4F4F] hover:bg-opacity-80 shadow-inner cursor-pointer"
+				>
+					MAX
+				</div>
+				<div
 					className="text-xl font-medium text-right flex hover:cursor-pointer"
 					onClick={() =>
 						setHideInputTokenDropdown(!hideInputTokenDropdown)
@@ -159,7 +169,7 @@ export const InputTokenDetail = () => {
 									src="assets/loading.svg"
 									className="inline animate-spin mr-2 h-5 w-5 text-white"
 								/>{" "}
-								Loading...
+								...
 							</div>
 							<div className="self-center">
 								<img
