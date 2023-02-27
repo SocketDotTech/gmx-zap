@@ -352,7 +352,8 @@ export const BridgeTokens = ({
 					{warning}
 				</div>
 			)}
-			{"value" in apiTxData &&
+			{sourceTxHash === "" &&
+				"value" in apiTxData &&
 				BigNumber.from(apiTxData.value).gt(
 					BigNumber.from(inputChainNativeToken.balance)
 				) && (
