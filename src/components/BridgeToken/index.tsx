@@ -11,8 +11,9 @@ import { queryResponseObj } from "../../types";
 import { PrimaryButton } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useAccount, useProvider, useSigner } from "wagmi";
-import { saveTxDetails } from "../../helpers";
+import { formatAmount, saveTxDetails } from "../../helpers";
 import { setTxDetails } from "../../redux";
+import { BigNumber } from "ethers";
 // let bridgeStatus: queryResponseObj;
 
 type BridgeTokensProps = {
@@ -34,7 +35,9 @@ export const BridgeTokens = ({
 	const dispatch = useAppDispatch();
 	const { data: signer } = useSigner();
 	const provider = useProvider();
-	const { inputToken } = useAppSelector((state) => state.tokens);
+	const { inputToken, inputChainNativeToken } = useAppSelector(
+		(state) => state.tokens
+	);
 	const { inputChainId, outputChainId, chainsInfo } = useAppSelector(
 		(state) => state.chains
 	);
@@ -65,10 +68,10 @@ export const BridgeTokens = ({
 		" " +
 		inputToken.symbol;
 
-	const bridgeName = route.usedBridgeNames[0];
+	// const bridgeName = route.usedBridgeNames[0];
 
 	useQuery(
-		["checkAllowance", allowanceTarget, sourceTxHash],
+		["checkAllowance", allowanceTarget],
 		() =>
 			getAllowanceDetail({
 				chainId: inputChainId.toString(),
@@ -93,7 +96,7 @@ export const BridgeTokens = ({
 					setHideBridgeBtn(false);
 				}
 			},
-			enabled: !!(allowanceTarget !== null && sourceTxHash === ""),
+			enabled: !!allowanceTarget,
 		}
 	);
 
@@ -117,7 +120,7 @@ export const BridgeTokens = ({
 					symbol: "GLP",
 					amount: glpReceived,
 				};
-				const prevTxDetails = await saveTxDetails(
+				const prevTxDetails = saveTxDetails(
 					address!,
 					sourceTxHash,
 					response?.destinationTxStatus == "COMPLETED" ? true : false,
@@ -178,18 +181,18 @@ export const BridgeTokens = ({
 		}
 	}, [isFirstMount]);
 
-	const gasLimitFromRoute = () => {
-		if (Object.keys(route).length === 0) return;
-		let userBridgeTx = {} as any;
-		route.userTxs.map((userTx: any) => {
-			if (userTx.userTxType === "fund-movr") {
-				userBridgeTx = userTx;
-			}
-		});
+	// const gasLimitFromRoute = () => {
+	// 	if (Object.keys(route).length === 0) return;
+	// 	let userBridgeTx = {} as any;
+	// 	route.userTxs.map((userTx: any) => {
+	// 		if (userTx.userTxType === "fund-movr") {
+	// 			userBridgeTx = userTx;
+	// 		}
+	// 	});
 
-		let gasLimit = userBridgeTx.gasFees.gasLimit;
-		return gasLimit;
-	};
+	// 	let gasLimit = userBridgeTx.gasFees.gasLimit;
+	// 	return gasLimit;
+	// };
 
 	const handleApprove = async () => {
 		if (!minimumApprovalAmount) return;
@@ -235,14 +238,14 @@ export const BridgeTokens = ({
 			setApproveBtnText("Approved");
 			setTimeout(() => {
 				setHideApproveBtn(true);
-			}, 3000);
-			setDisabledBridgeBtn(false);
+				setDisabledBridgeBtn(false);
+			}, 1000);
 		} catch (err: any) {
-			console.error(err);
-			setWarning(err.message);
+			console.error(err.reason || err.data.message);
+			setWarning(err.reason || err.data.message);
 			setTimeout(() => {
 				setWarning("");
-			}, 3000);
+			}, 5000);
 			setDisabledApproveBtn(false);
 			setLoadingApproveBtn(false);
 			setApproveBtnText("Approve");
@@ -255,16 +258,16 @@ export const BridgeTokens = ({
 			setLoadingBridgeBtn(true);
 			setBridgeBtnText("Bridging...");
 
-			const gasPrice = await signer!.getGasPrice();
+			// const gasPrice = await signer!.getGasPrice();
 
-			const gasEstimate = gasLimitFromRoute() + 1000;
+			// const gasEstimate = gasLimitFromRoute() + 1000;
 
 			const tx = await signer!.sendTransaction({
 				from: address,
 				to: apiTxData.txTarget,
 				data: apiTxData.txData,
 				value: apiTxData.value,
-				gasPrice: gasPrice,
+				// gasPrice: gasPrice,
 			});
 
 			// Initiates swap/bridge transaction on user's frontend which user has to sign
@@ -281,11 +284,11 @@ export const BridgeTokens = ({
 				setSourceTxHash(txHash);
 			}, 3000);
 		} catch (err: any) {
-			console.error(err);
-			setWarning(err.message);
+			console.log(err.reason || err.data.message);
+			setWarning(err.reason || err.data.message);
 			setTimeout(() => {
 				setWarning("");
-			}, 3000);
+			}, 5000);
 			setDisabledBridgeBtn(false);
 			setLoadingBridgeBtn(false);
 			setBridgeBtnText("Bridge");
@@ -349,29 +352,54 @@ export const BridgeTokens = ({
 					{warning}
 				</div>
 			)}
-			{sourceTxHash === "" && (
-				<div className={`flex flex-row gap-4 mt-14`}>
-					{!hideApproveBtn && (
-						<PrimaryButton
-							buttonText={approveBtnText}
-							loading={loadingApproveBtn}
-							bgColor={"#2E3FD9"}
-							disabled={disabledApproveBtn}
-							onClick={handleApprove}
-							completed={approveBtnText == "Approved"}
-						/>
-					)}
-					{!hideBridgeBtn && (
-						<PrimaryButton
-							buttonText={bridgeBtnText}
-							loading={loadingBridgeBtn}
-							bgColor={"#2E3FD9"}
-							disabled={disabledBridgeBtn}
-							onClick={handleBridge}
-						/>
-					)}
-				</div>
-			)}
+			{"value" in apiTxData &&
+				BigNumber.from(apiTxData.value).gt(
+					BigNumber.from(inputChainNativeToken.balance)
+				) && (
+					<>
+						<div className={`flex flex-row gap-4 mt-14`}>
+							<PrimaryButton
+								buttonText={`Not enough ${
+									inputChainNativeToken?.symbol
+								}. (${formatAmount(
+									apiTxData?.value,
+									inputChainNativeToken?.decimals
+								)} required)`}
+								bgColor={"gray"}
+								disabled={true}
+							/>
+						</div>
+					</>
+				)}
+			{sourceTxHash === "" &&
+				!(
+					"value" in apiTxData &&
+					BigNumber.from(apiTxData.value).gt(
+						BigNumber.from(inputChainNativeToken.balance)
+					)
+				) && (
+					<div className={`flex flex-row gap-4 mt-14`}>
+						{!hideApproveBtn && (
+							<PrimaryButton
+								buttonText={approveBtnText}
+								loading={loadingApproveBtn}
+								bgColor={"#2E3FD9"}
+								disabled={disabledApproveBtn}
+								onClick={handleApprove}
+								completed={approveBtnText == "Approved"}
+							/>
+						)}
+						{!hideBridgeBtn && (
+							<PrimaryButton
+								buttonText={bridgeBtnText}
+								loading={loadingBridgeBtn}
+								bgColor={"#2E3FD9"}
+								disabled={disabledBridgeBtn}
+								onClick={handleBridge}
+							/>
+						)}
+					</div>
+				)}
 			{sourceTxHash !== "" && chainsInfo && (
 				<div className="flex flex-row justify-around mt-1">
 					<button className="text-base text-white hover:underline border rounded-3xl border-zinc-400 bg-[#2E3FD9] px-2.5 py-1.5 flex flex-row">

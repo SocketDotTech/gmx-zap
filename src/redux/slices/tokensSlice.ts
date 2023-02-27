@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { NativeTokenDetail, TokenDetail } from "../../types";
-import { ZERO_BIG_NUMBER } from "../../config";
+import { NATIVE_TOKEN_ADDRESS, ZERO_BIG_NUMBER } from "../../config";
 
 export interface ITokensSliceState {
 	fromTokensList: Array<TokenDetail>;
@@ -13,6 +13,15 @@ export interface ITokensSliceState {
 	inputTokenAmount: string;
 	inputTokenPrice: number;
 	inputChainNativeTokenPrice: number;
+	inputChainNativeToken: {
+		chainId: number;
+		tokenAddress: string;
+		userAddress: string;
+		balance: string;
+		decimals: number;
+		symbol: string;
+		name: string;
+	};
 }
 
 const initTokenDetail: TokenDetail = {
@@ -39,6 +48,15 @@ const initialState: ITokensSliceState = {
 	inputTokenAmount: "",
 	inputTokenPrice: 0,
 	inputChainNativeTokenPrice: 0,
+	inputChainNativeToken: {
+		chainId: 0,
+		tokenAddress: NATIVE_TOKEN_ADDRESS,
+		userAddress: "",
+		balance: "0",
+		decimals: 0,
+		symbol: "",
+		name: "",
+	},
 };
 
 export const tokensSlice = createSlice({
@@ -78,6 +96,9 @@ export const tokensSlice = createSlice({
 		) => {
 			state.inputChainNativeTokenPrice = action.payload;
 		},
+		setInputChainNativeToken: (state, action: PayloadAction<any>) => {
+			state.inputChainNativeToken = action.payload;
+		},
 	},
 });
 
@@ -92,6 +113,7 @@ export const {
 	setInputTokenAmount,
 	setInputTokenPrice,
 	setInputChainNativeTokenPrice,
+	setInputChainNativeToken,
 } = tokensSlice.actions;
 
 export default tokensSlice.reducer;

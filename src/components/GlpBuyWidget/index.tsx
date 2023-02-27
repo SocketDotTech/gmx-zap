@@ -8,18 +8,20 @@ import {
 	BASIS_POINTS_DIVISOR,
 	CONTRACTS,
 	GLP_DECIMALS,
+	NATIVE_TOKEN_ADDRESS,
 	USD_DECIMALS,
 	ZERO_BIG_NUMBER,
 } from "../../config";
 import { expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+	setInputChainNativeToken,
 	setRefuelDetail,
 	setRefuelFromAmount,
 	setRefuelToAmount,
 	setRoute,
 } from "../../redux";
-import { getQuote } from "../../services";
+import { getQuote, getTokenBalanceByTokenAddress } from "../../services";
 import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
@@ -59,6 +61,26 @@ export const GlpBuyWidget = () => {
 	const [finalRoute, setFinalRoute] = useState<any>({});
 	const [finalRefuel, setFinalRefuel] = useState<any>({});
 	const [destinationCallData, setDestinationCallData] = useState<any>({});
+
+	useQuery(
+		["inputChainNativeToken", inputChainId, address],
+		() =>
+			getTokenBalanceByTokenAddress({
+				chainId: inputChainId.toString(),
+				tokenAddress: NATIVE_TOKEN_ADDRESS,
+				userAddress: address!,
+			}),
+		{
+			onSuccess: (data: any) => {
+				const response = data?.data?.result;
+				dispatch(setInputChainNativeToken(response));
+			},
+			enabled: !!(inputToken.chainId !== 0 && address != undefined),
+			refetchOnWindowFocus: true,
+			refetchInterval: 5000,
+			refetchIntervalInBackground: true,
+		}
+	);
 
 	quoteListResponse = useQuery(
 		[
