@@ -7,12 +7,13 @@ import {
 	abis,
 	BASIS_POINTS_DIVISOR,
 	CONTRACTS,
+	GAS_LIMIT_FOR_BUYING_GLP,
 	GLP_DECIMALS,
 	NATIVE_TOKEN_ADDRESS,
 	USD_DECIMALS,
 	ZERO_BIG_NUMBER,
 } from "../../config";
-import { expandDecimals, formatAmount } from "../../helpers";
+import { bigNumberify, expandDecimals, formatAmount } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
 	setInputChainNativeToken,
@@ -32,7 +33,6 @@ import { SwitchNetworkButton } from "../Button";
 // import { RefuelBox } from "../RefuelBox";
 
 let quoteListResponse: any;
-const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
 
 export const GlpBuyWidget = () => {
 	const { address } = useAccount();
@@ -56,8 +56,9 @@ export const GlpBuyWidget = () => {
 	const [proceedBtnText, setProceedBtnText] = useState<string>("Proceed");
 	const [minGlpReceived, setMinGlpReceived] = useState<string>("");
 	const [tabIndex, setTabIndex] = useState<number>(0);
-	const [minGlpAmount, setMinGlpAmount] =
-		useState<BigNumber>(ZERO_BIG_NUMBER);
+	const [minGlpAmount, setMinGlpAmount] = useState<BigNumber>(
+		ZERO_BIG_NUMBER!
+	);
 	const [finalRoute, setFinalRoute] = useState<any>({});
 	const [finalRefuel, setFinalRefuel] = useState<any>({});
 	const [destinationCallData, setDestinationCallData] = useState<any>({});
@@ -209,12 +210,11 @@ export const GlpBuyWidget = () => {
 			).toString();
 			minGlpAmount = parseFloat(minGlpAmount).toFixed(3);
 			setMinGlpReceived(minGlpAmount);
-			minGlpAmount = BigNumber.from(
-				(parseFloat(minGlpAmount) * 1000).toFixed(0)
-			)
-				.mul(BASIS_POINTS_DIVISOR - slippage * 100)
-				.div(BASIS_POINTS_DIVISOR)
-				.toString();
+			minGlpAmount =
+				bigNumberify((parseFloat(minGlpAmount) * 1000).toFixed(0))
+					?.mul(BASIS_POINTS_DIVISOR - slippage * 100)
+					.div(BASIS_POINTS_DIVISOR)
+					.toString() || "";
 
 			setMinGlpAmount(expandDecimals(minGlpAmount, 15));
 
@@ -241,7 +241,7 @@ export const GlpBuyWidget = () => {
 		const destinationPayload = iFace.encodeFunctionData(method, params);
 
 		// const gasLimit = await getGasLimit(contract, method, params, value);
-		const gasLimit = BigNumber.from(GAS_LIMIT_FOR_BUYING_GLP);
+		const gasLimit = bigNumberify(GAS_LIMIT_FOR_BUYING_GLP)!;
 		const destinationGasLimit = gasLimit.toNumber() + 30000;
 
 		console.log(destinationGasLimit);

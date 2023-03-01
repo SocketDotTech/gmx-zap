@@ -11,9 +11,8 @@ import { queryResponseObj } from "../../types";
 import { PrimaryButton, SwitchNetworkButton } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
-import { formatAmount, saveTxDetails } from "../../helpers";
+import { bigNumberify, formatAmount, saveTxDetails } from "../../helpers";
 import { setTxDetails } from "../../redux";
-import { BigNumber } from "ethers";
 // let bridgeStatus: queryResponseObj;
 
 type BridgeTokensProps = {
@@ -363,8 +362,10 @@ export const BridgeTokens = ({
 			{sourceTxHash === "" &&
 				chain?.id === inputChainId &&
 				"value" in apiTxData &&
-				BigNumber.from(apiTxData.value).gt(
-					BigNumber.from(inputChainNativeToken.balance)
+				bigNumberify(apiTxData.value) &&
+				bigNumberify(inputChainNativeToken.balance) &&
+				bigNumberify(apiTxData.value)?.gt(
+					bigNumberify(inputChainNativeToken.balance)!
 				) && (
 					<>
 						<div className={`flex flex-row gap-4 mt-14`}>
@@ -385,8 +386,10 @@ export const BridgeTokens = ({
 				chain?.id === inputChainId &&
 				!(
 					"value" in apiTxData &&
-					BigNumber.from(apiTxData.value).gt(
-						BigNumber.from(inputChainNativeToken.balance)
+					bigNumberify(apiTxData.value) &&
+					bigNumberify(inputChainNativeToken.balance) &&
+					bigNumberify(apiTxData.value)?.gt(
+						bigNumberify(inputChainNativeToken.balance)!
 					)
 				) && (
 					<div className={`flex flex-row gap-4 mt-14`}>

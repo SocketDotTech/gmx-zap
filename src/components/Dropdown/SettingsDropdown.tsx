@@ -3,12 +3,11 @@ import { useAppDispatch, useAppSelector, useClickAway } from "../../hooks";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { setSlippage } from "../../redux";
 import { isValidSlippage } from "../../helpers";
+import { defaultSlippageArray } from "../../config";
 
 type Props = {
 	onHide: (value: boolean) => void;
 };
-
-const defaultSlippageArray = [0.5, 1, 3];
 
 export const SettingsDropdown = ({ onHide }: Props) => {
 	const dispatch = useAppDispatch();

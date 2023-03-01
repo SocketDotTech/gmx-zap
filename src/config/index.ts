@@ -16,6 +16,7 @@ import {
 	OPTIMISM,
 	POLYGON,
 } from "./chains";
+import { ZERO_BIG_NUMBER } from "./constants";
 
 export const supportedInputChains = [
 	ETHEREUM,
@@ -28,27 +29,6 @@ export const supportedInputChains = [
 ];
 
 export const supportedOutputChains = [ARBITRUM, AVALANCHE];
-
-export const glpSupportedTokens: {
-	[x: number]: string[];
-} = {
-	42161: ["WBTC", "LINK", "UNI", "USDC", "USDT", "DAI", "FRAX", "WETH"],
-	43114: ["WETH.E", "WBTC.E", "BTC.B", "USDC", "USDC.E", "WAVAX"],
-};
-
-export const NATIVE_TOKEN_ADDRESS =
-	"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-
-export const GLP_DECIMALS = 18;
-export const USD_DECIMALS = 30;
-
-export const BASIS_POINTS_DIVISOR = 10000;
-export const DEFAULT_SLIPPAGE_AMOUNT = 30;
-export const SECONDS_PER_YEAR = 31536000;
-
-export const ZERO_BIG_NUMBER = BigNumber.from(0);
-
-export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
 export const NATIVE_TOKEN: {
 	[x: number]: NativeTokenDetail;
@@ -80,3 +60,4 @@ export const abis = {
 export * from "./contracts";
 export * from "./rpc";
 export * from "./chains";
+export * from "./constants";

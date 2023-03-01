@@ -1,8 +1,8 @@
-import { BigNumber } from "ethers";
 import React from "react";
 import { useQuery } from "react-query";
 import { NATIVE_TOKEN, NATIVE_TOKEN_SYMBOLS } from "../../config";
 import {
+	bigNumberify,
 	formatAmount,
 	getFromTokensListFromResponse,
 	getTokenPriceFromResponse,
@@ -111,7 +111,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			<InputTokenDetail />
 			{enabledRefuel && fromAmount != "" && inputChainId != 0 && (
 				<p className="text-pink-600 text-sm font-semibold">
-					+{formatAmount(BigNumber.from(fromAmount), 18, 3)}{" "}
+					+{formatAmount(bigNumberify(fromAmount), 18, 3)}{" "}
 					{NATIVE_TOKEN_SYMBOLS[inputChainId]} for Refuel
 				</p>
 			)}
@@ -121,7 +121,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			<ReceiveGlpDetail glpReceived={glpReceived} />
 			{enabledRefuel && toAmount != "" && outputChainId != 0 && (
 				<p className="text-pink-600 text-sm font-semibold">
-					+{formatAmount(BigNumber.from(toAmount), 18, 3)}{" "}
+					+{formatAmount(bigNumberify(toAmount), 18, 3)}{" "}
 					{NATIVE_TOKEN_SYMBOLS[outputChainId]} for Refuel
 				</p>
 			)}

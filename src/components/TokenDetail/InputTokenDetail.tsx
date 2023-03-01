@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { useAccount } from "wagmi";
 import { isValidInput } from "../../helpers";
@@ -17,9 +17,10 @@ import {
 } from "../../services";
 import { InputTokenSelectDropdown } from "../Dropdown";
 import { useDebouncedCallback } from "use-debounce";
-import { NATIVE_TOKEN_ADDRESS } from "../../config";
-
-const DEBOUNCE_TIMEOUT = 1500;
+import {
+	INPUT_TOKEN_AMOUNT_FIELD_DEBOUNCE_TIMEOUT,
+	NATIVE_TOKEN_ADDRESS,
+} from "../../config";
 
 export const InputTokenDetail = () => {
 	const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ export const InputTokenDetail = () => {
 		(value: string) => {
 			dispatch(setInputTokenAmount(value));
 		},
-		DEBOUNCE_TIMEOUT
+		INPUT_TOKEN_AMOUNT_FIELD_DEBOUNCE_TIMEOUT
 	);
 
 	useQuery(

@@ -4,6 +4,7 @@ import {
 	supportedInputChains,
 	supportedOutputChains,
 	USD_DECIMALS,
+	ZERO_BIG_NUMBER,
 } from "../config";
 import {
 	ChainDetail,
@@ -12,7 +13,7 @@ import {
 	responseObj,
 	TokenDetail,
 } from "../types";
-import { expandDecimals } from "./numbers";
+import { bigNumberify, expandDecimals } from "./numbers";
 
 export const getChainDataByChainId = (
 	chains: any
@@ -112,7 +113,8 @@ export const getTokenPriceFromResponse = (
 } => {
 	const data: any = tokenPrice?.data?.result.tokenPrice.toString();
 	const integerPrice = data.split(".")[0];
-	const tokenPriceBN: BigNumber = BigNumber.from(integerPrice).mul(
+	if (!integerPrice) return { tokenPriceBN: ZERO_BIG_NUMBER! };
+	const tokenPriceBN: BigNumber = bigNumberify(integerPrice)!.mul(
 		expandDecimals(1, USD_DECIMALS)
 	);
 
