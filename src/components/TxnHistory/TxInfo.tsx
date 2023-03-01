@@ -27,7 +27,9 @@ export const TxInfo = ({ txDetail }: { txDetail: any }) => {
 				const prevTxDetails = saveTxDetails(
 					address!,
 					response.sourceTransactionHash,
-					response?.destinationTxStatus == "COMPLETED" ? true : false,
+					response?.destinationTxStatus === "COMPLETED"
+						? true
+						: false,
 					response
 				);
 				dispatch(setTxDetails({ prevTxDetails: prevTxDetails }));
@@ -92,7 +94,7 @@ export const TxInfo = ({ txDetail }: { txDetail: any }) => {
 					<div>
 						<img
 							src={`assets/${
-								txDetail?.toChainId == AVALANCHE
+								txDetail?.toChainId === AVALANCHE
 									? "ic_glp_avax.svg"
 									: "ic_glp_arbitrum.svg"
 							}`}

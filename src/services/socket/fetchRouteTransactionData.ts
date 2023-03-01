@@ -6,7 +6,7 @@ type Props = {
 	refuel?: any;
 };
 
-const getRouteTransactionData = ({
+const getRouteTransactionData = async ({
 	route,
 	destinationCallData,
 	refuel,
@@ -22,7 +22,7 @@ const getRouteTransactionData = ({
 		path: `/build-tx`,
 		body: body,
 	};
-	const response: any = postReq(obj);
+	const response: any = await postReq(obj);
 
 	if (!response) {
 		throw new Error("Problem fetching route transaction data");

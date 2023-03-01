@@ -53,7 +53,7 @@ export const SettingsDropdown = ({ onHide }: Props) => {
 						<label
 							htmlFor="swap-slippage-1"
 							className={`flex items-center justify-center w-12 relative z-10 p-2 cursor-pointer border-[1.5px] text-sm rounded-md font-semibold text-zinc-400 border-zinc-400 ${
-								slippage == 0.5 &&
+								slippage === 0.5 &&
 								"text-[#ff0080] border-[#ff0080] bg-opacity-80"
 							}`}
 						>
@@ -73,7 +73,7 @@ export const SettingsDropdown = ({ onHide }: Props) => {
 						<label
 							htmlFor="swap-slippage-2"
 							className={`flex items-center justify-center w-12 relative z-10 p-2 cursor-pointer border-[1.5px] text-sm rounded-md font-semibold  text-zinc-400 border-zinc-400 ${
-								slippage == 1 &&
+								slippage === 1 &&
 								"text-[#ff0080] border-[#ff0080] bg-opacity-80"
 							}`}
 						>
@@ -93,7 +93,7 @@ export const SettingsDropdown = ({ onHide }: Props) => {
 						<label
 							htmlFor="swap-slippage-3"
 							className={`flex items-center justify-center w-12 relative z-10 p-2 cursor-pointer border-[1.5px] text-sm rounded-md font-semibold  text-zinc-400 border-zinc-400 ${
-								slippage == 3 &&
+								slippage === 3 &&
 								"text-[#ff0080] border-[#ff0080] bg-opacity-80"
 							}`}
 						>
@@ -110,7 +110,8 @@ export const SettingsDropdown = ({ onHide }: Props) => {
 						<input
 							type="tel"
 							className={`border-[1.5px] bg-[#17192E] pb-0.5 rounded-md h-full w-full px-3 focus:outline-none text-ellipsis border-zinc-400 ${
-								slippage.toString() == customSlippage &&
+								slippage.toString() ===
+									customSlippage.toString() &&
 								"text-[#ff0080] border-[#ff0080]"
 							}`}
 							placeholder="Custom"
@@ -129,7 +130,7 @@ export const SettingsDropdown = ({ onHide }: Props) => {
 									);
 								}
 
-								if (e.target.value == "") {
+								if (e.target.value === "") {
 									dispatch(setSlippage(1));
 									setCustomSlippage(e.target.value);
 								}

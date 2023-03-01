@@ -112,7 +112,7 @@ export const BridgeTokens = ({
 		{
 			enabled: !!(
 				sourceTxHash !== "" &&
-				destinationTxHash == "" &&
+				destinationTxHash === "" &&
 				address
 			),
 			onSuccess: async (data) => {
@@ -124,7 +124,9 @@ export const BridgeTokens = ({
 				const prevTxDetails = saveTxDetails(
 					address!,
 					sourceTxHash,
-					response?.destinationTxStatus == "COMPLETED" ? true : false,
+					response?.destinationTxStatus === "COMPLETED"
+						? true
+						: false,
 					response,
 					glpDetail,
 					inputToken,
@@ -156,7 +158,7 @@ export const BridgeTokens = ({
 			const response: any = bridgeStatus.data?.data?.result;
 			if (
 				response.destinationTransactionHash != null &&
-				response.destinationTxStatus == "COMPLETED"
+				response.destinationTxStatus === "COMPLETED"
 			) {
 				setDestinationTxHash(response.destinationTransactionHash);
 			}
@@ -359,7 +361,7 @@ export const BridgeTokens = ({
 				</div>
 			)}
 			{sourceTxHash === "" &&
-				chain?.id == inputChainId &&
+				chain?.id === inputChainId &&
 				"value" in apiTxData &&
 				BigNumber.from(apiTxData.value).gt(
 					BigNumber.from(inputChainNativeToken.balance)
@@ -380,7 +382,7 @@ export const BridgeTokens = ({
 					</>
 				)}
 			{sourceTxHash === "" &&
-				chain?.id == inputChainId &&
+				chain?.id === inputChainId &&
 				!(
 					"value" in apiTxData &&
 					BigNumber.from(apiTxData.value).gt(
@@ -395,7 +397,7 @@ export const BridgeTokens = ({
 								bgColor={"#2E3FD9"}
 								disabled={disabledApproveBtn}
 								onClick={handleApprove}
-								completed={approveBtnText == "Approved"}
+								completed={approveBtnText === "Approved"}
 							/>
 						)}
 						{!hideBridgeBtn && (

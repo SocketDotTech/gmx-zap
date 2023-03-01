@@ -1,10 +1,10 @@
 import { RequestProps, getReq } from "../../api";
 
-const getSupportedBridges = () => {
+const getSupportedBridges = async () => {
 	const obj: RequestProps = {
 		path: "/supported/bridges",
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem fetching supported bridges");

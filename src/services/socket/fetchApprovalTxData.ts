@@ -8,7 +8,7 @@ type Props = {
 	amount: string;
 };
 
-const getApprovalTxData = ({
+const getApprovalTxData = async ({
 	chainId,
 	owner,
 	allowanceTarget,
@@ -18,7 +18,7 @@ const getApprovalTxData = ({
 	const obj: RequestProps = {
 		path: `/approval/build-tx?chainID=${chainId}&owner=${owner}&allowanceTarget=${allowanceTarget}&tokenAddress=${tokenAddress}&amount=${amount}`,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem getting approval transaction data");

@@ -4,11 +4,11 @@ type Props = {
 	chainId: string;
 };
 
-const getGasPriceByChainId = ({ chainId }: Props) => {
+const getGasPriceByChainId = async ({ chainId }: Props) => {
 	const obj: RequestProps = {
 		path: `/gas-price?&chainId=${chainId}`,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem fetching gas price");

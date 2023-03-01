@@ -168,7 +168,7 @@ export const GlpStats = () => {
 					<div className="flex p-4">
 						<img
 							src={`assets/${
-								outputChainId == AVALANCHE
+								outputChainId === AVALANCHE
 									? "ic_glp_avax.svg"
 									: "ic_glp_arbitrum.svg"
 							}`}
@@ -180,7 +180,7 @@ export const GlpStats = () => {
 								GLP
 							</div>
 							<div className="text-xs text-zinc-500 font-medium">
-								{outputChainId == AVALANCHE ? "AVAX" : "ARBI"}
+								{outputChainId === AVALANCHE ? "AVAX" : "ARBI"}
 							</div>
 						</div>
 					</div>

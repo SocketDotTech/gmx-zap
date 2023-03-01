@@ -66,7 +66,7 @@ export const getFromTokensListFromResponse = (
 	const tokenList: TokenDetail[] = data;
 	let inputToken: TokenDetail = tokenList[0];
 
-	inputToken = tokenList.filter((token) => token.symbol == "USDC")[0];
+	inputToken = tokenList.filter((token) => token.symbol === "USDC")[0];
 
 	return { fromTokensList: tokenList, inputTokenInfo: inputToken };
 };
@@ -84,7 +84,7 @@ export const getToTokensListFromResponse = (
 	);
 	let outputToken: TokenDetail = tokenList[0];
 
-	outputToken = tokenList.filter((token) => token.symbol == "USDC")[0];
+	outputToken = tokenList.filter((token) => token.symbol === "USDC")[0];
 
 	return { toTokensList: tokenList, outputTokenInfo: outputToken };
 };

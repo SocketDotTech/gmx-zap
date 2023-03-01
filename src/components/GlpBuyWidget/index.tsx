@@ -444,7 +444,7 @@ export const GlpBuyWidget = () => {
 						</div>
 
 						<div className="pb-1"></div>
-						{proceedBtnText == "Switch Network" &&
+						{proceedBtnText === "Switch Network" &&
 						chain!.id != inputChainId ? (
 							<SwitchNetworkButton bgColor="#2E3FD9" />
 						) : (

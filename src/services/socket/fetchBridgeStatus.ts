@@ -6,7 +6,7 @@ type Props = {
 	toChainId: string;
 };
 
-const getBridgeStatus = ({
+const getBridgeStatus = async ({
 	transactionHash,
 	fromChainId,
 	toChainId,
@@ -14,7 +14,7 @@ const getBridgeStatus = ({
 	const obj: RequestProps = {
 		path: `bridge-status?transactionHash=${transactionHash}&fromChainId=${fromChainId}&toChainId=${toChainId}`,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem getting bridge tx status");

@@ -45,9 +45,9 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 			const pendingTxs: Array<{}> = [],
 				completedTxs: Array<{}> = [];
 			Object.keys(prevTxDetailsAccount).map((txData) => {
-				if (prevTxDetailsAccount[txData].isCompleted == false)
+				if (prevTxDetailsAccount[txData].isCompleted === false)
 					pendingTxs.push(prevTxDetailsAccount[txData]);
-				else if (prevTxDetailsAccount[txData].isCompleted == true)
+				else if (prevTxDetailsAccount[txData].isCompleted === true)
 					completedTxs.push(prevTxDetailsAccount[txData]);
 			});
 			setPendingTxn(pendingTxs);
@@ -148,7 +148,7 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 								Transaction status is updated every 10 seconds
 							</div>
 							<div className="my-6 mt-4 max-h-72 overflow-auto">
-								{selectedHistory == 0 &&
+								{selectedHistory === 0 &&
 									pendingTxn &&
 									pendingTxn.length > 0 &&
 									pendingTxn.map((tx: any) => (
@@ -157,13 +157,14 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 											key={tx.sourceTransactionHash}
 										/>
 									))}
-								{selectedHistory == 0 &&
-									(!pendingTxn || pendingTxn.length == 0) && (
+								{selectedHistory === 0 &&
+									(!pendingTxn ||
+										pendingTxn.length === 0) && (
 										<div className="text-zinc-400 font-medium">
 											No pending transactions
 										</div>
 									)}
-								{selectedHistory == 1 &&
+								{selectedHistory === 1 &&
 									completedTxn &&
 									completedTxn.length > 0 &&
 									completedTxn.map((tx: any) => (
@@ -172,9 +173,9 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 											key={tx.sourceTransactionHash}
 										/>
 									))}
-								{selectedHistory == 1 &&
+								{selectedHistory === 1 &&
 									(!completedTxn ||
-										completedTxn.length == 0) && (
+										completedTxn.length === 0) && (
 										<div className="text-zinc-400 font-medium">
 											No completed transactions
 										</div>

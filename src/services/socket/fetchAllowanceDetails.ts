@@ -7,7 +7,7 @@ type Props = {
 	tokenAddress: string;
 };
 
-const getAllowanceDetail = ({
+const getAllowanceDetail = async ({
 	chainId,
 	owner,
 	allowanceTarget,
@@ -16,7 +16,7 @@ const getAllowanceDetail = ({
 	const obj: RequestProps = {
 		path: `/approval/check-allowance?chainID=${chainId}&owner=${owner}&allowanceTarget=${allowanceTarget}&tokenAddress=${tokenAddress}`,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem checking allowance");

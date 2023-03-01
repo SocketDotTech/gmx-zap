@@ -17,7 +17,7 @@ type Props = {
 	destinationGasLimit?: string;
 };
 
-const getQuote = ({
+const getQuote = async ({
 	fromChainId,
 	fromTokenAddress,
 	toChainId,
@@ -47,7 +47,7 @@ const getQuote = ({
 	const obj: RequestProps = {
 		path,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem fetching quotes");

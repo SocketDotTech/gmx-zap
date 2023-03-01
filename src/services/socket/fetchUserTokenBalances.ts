@@ -4,11 +4,11 @@ type Props = {
 	userAddress: string;
 };
 
-const getUserTokenBalances = ({ userAddress }: Props) => {
+const getUserTokenBalances = async ({ userAddress }: Props) => {
 	const obj: RequestProps = {
 		path: `balances?userAddress=${userAddress}`,
 	};
-	const response = getReq(obj);
+	const response = await getReq(obj);
 
 	if (!response) {
 		throw new Error("Problem fetching user token balances");
