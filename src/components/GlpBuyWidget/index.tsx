@@ -28,6 +28,7 @@ import { TokensDetail } from "../TokenDetail";
 import { WidgetHeader } from "../WidgetHeader";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { TxnHistory } from "../TxnHistory";
+import { SwitchNetworkButton } from "../Button";
 // import { RefuelBox } from "../RefuelBox";
 
 let quoteListResponse: any;
@@ -35,7 +36,6 @@ const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
 
 export const GlpBuyWidget = () => {
 	const { address } = useAccount();
-	const { data: signer } = useSigner();
 	const { chain } = useNetwork();
 	const dispatch = useAppDispatch();
 	const {
@@ -141,7 +141,7 @@ export const GlpBuyWidget = () => {
 			setProceedBtnText("Not Enough Balance");
 			setProceedBtnDisabled(true);
 		} else if (chain!.id != inputChainId) {
-			setProceedBtnText(`Switch to ${chainsInfo[inputChainId]["name"]}`);
+			setProceedBtnText(`Switch Network`);
 			setProceedBtnDisabled(true);
 		} else if (
 			quoteListResponse.isSuccess &&
@@ -444,17 +444,22 @@ export const GlpBuyWidget = () => {
 						</div>
 
 						<div className="pb-1"></div>
-						<button
-							className={`p-3 text-white text-base font-semibold w-full rounded bg-[#2E3FD9] ${
-								proceedBtnDisabled
-									? "cursor-not-allowed bg-[#5B5C68]"
-									: "cursor-pointer"
-							}`}
-							disabled={proceedBtnDisabled}
-							onClick={proceedToFinal}
-						>
-							{proceedBtnText}
-						</button>
+						{proceedBtnText == "Switch Network" &&
+						chain!.id != inputChainId ? (
+							<SwitchNetworkButton bgColor="#2E3FD9" />
+						) : (
+							<button
+								className={`p-3 text-white text-base font-semibold w-full rounded bg-[#2E3FD9] ${
+									proceedBtnDisabled
+										? "cursor-not-allowed bg-[#5B5C68]"
+										: "cursor-pointer"
+								}`}
+								disabled={proceedBtnDisabled}
+								onClick={proceedToFinal}
+							>
+								{proceedBtnText}
+							</button>
+						)}
 					</>
 				)}
 				{tabIndex === 1 && (

@@ -8,9 +8,9 @@ import {
 } from "../../services";
 
 import { queryResponseObj } from "../../types";
-import { PrimaryButton } from "../Button";
+import { PrimaryButton, SwitchNetworkButton } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { useAccount, useProvider, useSigner } from "wagmi";
+import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
 import { formatAmount, saveTxDetails } from "../../helpers";
 import { setTxDetails } from "../../redux";
 import { BigNumber } from "ethers";
@@ -31,6 +31,7 @@ export const BridgeTokens = ({
 	glpReceived,
 	setTabIndex,
 }: BridgeTokensProps) => {
+	const { chain } = useNetwork();
 	const { address } = useAccount();
 	const dispatch = useAppDispatch();
 	const { data: signer } = useSigner();
@@ -352,7 +353,13 @@ export const BridgeTokens = ({
 					{warning}
 				</div>
 			)}
+			{sourceTxHash === "" && chain?.id != inputChainId && (
+				<div className="mt-14">
+					<SwitchNetworkButton bgColor="#2E3FD9" />
+				</div>
+			)}
 			{sourceTxHash === "" &&
+				chain?.id == inputChainId &&
 				"value" in apiTxData &&
 				BigNumber.from(apiTxData.value).gt(
 					BigNumber.from(inputChainNativeToken.balance)
@@ -373,6 +380,7 @@ export const BridgeTokens = ({
 					</>
 				)}
 			{sourceTxHash === "" &&
+				chain?.id == inputChainId &&
 				!(
 					"value" in apiTxData &&
 					BigNumber.from(apiTxData.value).gt(
