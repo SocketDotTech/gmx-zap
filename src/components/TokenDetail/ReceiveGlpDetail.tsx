@@ -29,7 +29,7 @@ export const ReceiveGlpDetail = ({ glpReceived }: { glpReceived: string }) => {
 									)
 								)
 						  )
-								.toFixed(2)
+								.toFixed(3)
 								.toLocaleString()}
 				</div>
 			</div>

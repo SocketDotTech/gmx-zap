@@ -11,7 +11,13 @@ import { queryResponseObj } from "../../types";
 import { PrimaryButton, SwitchNetworkButton } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
-import { bigNumberify, formatAmount, saveTxDetails } from "../../helpers";
+import {
+	bigNumberify,
+	formatAmount,
+	limitDecimals,
+	parseValue,
+	saveTxDetails,
+} from "../../helpers";
 import { setTxDetails } from "../../redux";
 // let bridgeStatus: queryResponseObj;
 
@@ -62,9 +68,7 @@ export const BridgeTokens = ({
 	const isFirstMount = useRef(true);
 
 	const inputAmountSimplified =
-		(parseFloat(route.fromAmount) / 10 ** inputToken.decimals)
-			.toFixed(4)
-			.toString() +
+		formatAmount(route.fromAmount, inputToken.decimals, 4, true) +
 		" " +
 		inputToken.symbol;
 
@@ -156,7 +160,7 @@ export const BridgeTokens = ({
 		if (bridgeStatus.isSuccess) {
 			const response: any = bridgeStatus.data?.data?.result;
 			if (
-				response.destinationTransactionHash != null &&
+				response.destinationTransactionHash !== null &&
 				response.destinationTxStatus === "COMPLETED"
 			) {
 				setDestinationTxHash(response.destinationTransactionHash);
@@ -319,7 +323,8 @@ export const BridgeTokens = ({
 			<div className="text-white text-xl font-medium">Bridge Info</div>
 			<div className="text-zinc-400 test-base font-medium py-1">
 				{inputAmountSimplified} on {chainsInfo[inputChainId]["name"]} to{" "}
-				{glpReceived} GLP on {chainsInfo[outputChainId]["name"]}
+				{limitDecimals(glpReceived, 4)} GLP on{" "}
+				{chainsInfo[outputChainId]["name"]}
 				{/* via{" "}{bridgeName} bridge */}
 			</div>
 			{loading && (

@@ -13,7 +13,13 @@ import {
 	USD_DECIMALS,
 	ZERO_BIG_NUMBER,
 } from "../../config";
-import { bigNumberify, expandDecimals, formatAmount } from "../../helpers";
+import {
+	bigNumberify,
+	expandDecimals,
+	formatAmount,
+	limitDecimals,
+	parseValue,
+} from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
 	setInputChainNativeToken,
@@ -97,14 +103,11 @@ export const GlpBuyWidget = () => {
 				fromTokenAddress: inputToken.address,
 				toChainId: outputChainId.toString(),
 				toTokenAddress: outputToken.address,
-				fromAmount: (
-					parseFloat(inputTokenAmount) *
-					10 ** inputToken.decimals
-				)
-					.toLocaleString()
-					.split(",")
-					.join(""),
-				userAddress: address || "",
+				fromAmount: parseValue(
+					inputTokenAmount,
+					inputToken.decimals
+				)?.toString()!,
+				userAddress: address!,
 				uniqueRoutesPerBridge: true,
 				sort: "output",
 				bridgeWithGas: enabledRefuel,
@@ -141,7 +144,7 @@ export const GlpBuyWidget = () => {
 		) {
 			setProceedBtnText("Not Enough Balance");
 			setProceedBtnDisabled(true);
-		} else if (chain!.id != inputChainId) {
+		} else if (chain!.id !== inputChainId) {
 			setProceedBtnText(`Switch Network`);
 			setProceedBtnDisabled(true);
 		} else if (
@@ -202,23 +205,24 @@ export const GlpBuyWidget = () => {
 				glpPrice,
 				USD_DECIMALS,
 				10,
-				true
+				false
 			);
 			let minGlpAmount = (
 				(route.receivedValueInUsd + route.totalGasFeesInUsd) /
 				parseFloat(glpPriceInUSD)
 			).toString();
-			minGlpAmount = parseFloat(minGlpAmount).toFixed(3);
+
 			setMinGlpReceived(minGlpAmount);
-			minGlpAmount =
-				bigNumberify((parseFloat(minGlpAmount) * 1000).toFixed(0))
-					?.mul(BASIS_POINTS_DIVISOR - slippage * 100)
-					.div(BASIS_POINTS_DIVISOR)
-					.toString() || "";
+			minGlpAmount = limitDecimals(minGlpAmount, 5);
 
-			setMinGlpAmount(expandDecimals(minGlpAmount, 15));
+			minGlpAmount = bigNumberify(
+				(parseFloat(minGlpAmount) * 1e5).toFixed(0)
+			)
+				?.mul(BASIS_POINTS_DIVISOR - slippage * 1000)
+				.div(BASIS_POINTS_DIVISOR)
+				.toString()!;
 
-			minGlpAmount = (parseInt(minGlpAmount) / 1000).toString();
+			setMinGlpAmount(expandDecimals(minGlpAmount, 13));
 		}
 	}, [route, slippage]);
 
@@ -250,14 +254,11 @@ export const GlpBuyWidget = () => {
 			fromTokenAddress: inputToken.address,
 			toChainId: outputChainId.toString(),
 			toTokenAddress: outputToken.address,
-			fromAmount: (
-				parseFloat(inputTokenAmount) *
-				10 ** inputToken.decimals
-			)
-				.toLocaleString()
-				.split(",")
-				.join(""),
-			userAddress: address || "",
+			fromAmount: parseValue(
+				inputTokenAmount,
+				inputToken.decimals
+			)?.toString()!,
+			userAddress: address,
 			uniqueRoutesPerBridge: true,
 			sort: "output",
 			includeBridges: ["stargate"],
@@ -272,14 +273,11 @@ export const GlpBuyWidget = () => {
 			fromTokenAddress: inputToken.address,
 			toChainId: outputChainId.toString(),
 			toTokenAddress: outputToken.address,
-			fromAmount: (
-				parseFloat(inputTokenAmount) *
-				10 ** inputToken.decimals
-			)
-				.toLocaleString()
-				.split(",")
-				.join(""),
-			userAddress: address || "",
+			fromAmount: parseValue(
+				inputTokenAmount,
+				inputToken.decimals
+			)?.toString()!,
+			userAddress: address,
 			uniqueRoutesPerBridge: true,
 			sort: "output",
 			includeBridges: ["stargate"],
