@@ -14,7 +14,8 @@ export const NATIVE_TOKEN_ADDRESS =
 export const GLP_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 
-export const BASIS_POINTS_DIVISOR = 100000;
+export const BASIS_POINTS_DIVISOR = 10000;
+export const BASIS_DIVISOR_FOR_SLIPPAGE = 100000;
 export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const SECONDS_PER_YEAR = 31536000;
 

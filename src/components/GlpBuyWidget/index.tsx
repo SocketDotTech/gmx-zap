@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { useAccount, useNetwork, useSigner } from "wagmi";
 import {
 	abis,
-	BASIS_POINTS_DIVISOR,
+	BASIS_DIVISOR_FOR_SLIPPAGE,
 	CONTRACTS,
 	GAS_LIMIT_FOR_BUYING_GLP,
 	GLP_DECIMALS,
@@ -218,8 +218,8 @@ export const GlpBuyWidget = () => {
 			minGlpAmount = bigNumberify(
 				(parseFloat(minGlpAmount) * 1e5).toFixed(0)
 			)
-				?.mul(BASIS_POINTS_DIVISOR - slippage * 1000)
-				.div(BASIS_POINTS_DIVISOR)
+				?.mul(BASIS_DIVISOR_FOR_SLIPPAGE - slippage * 1000)
+				.div(BASIS_DIVISOR_FOR_SLIPPAGE)
 				.toString()!;
 
 			setMinGlpAmount(expandDecimals(minGlpAmount, 13));
