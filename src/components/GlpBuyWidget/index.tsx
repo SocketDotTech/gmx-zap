@@ -140,6 +140,12 @@ export const GlpBuyWidget = () => {
 			setProceedBtnText("Fetching Route...");
 			setProceedBtnDisabled(true);
 		} else if (
+			quoteListResponse.isSuccess &&
+			Object.keys(route).length === 0
+		) {
+			setProceedBtnText("No Routes Available");
+			setProceedBtnDisabled(true);
+		} else if (
 			(parseFloat(inputTokenAmount) || 0) > (inputTokenBalance || 0)
 		) {
 			setProceedBtnText("Not Enough Balance");
@@ -153,12 +159,6 @@ export const GlpBuyWidget = () => {
 		) {
 			setProceedBtnText("Proceed");
 			setProceedBtnDisabled(false);
-		} else if (
-			quoteListResponse.isSuccess &&
-			Object.keys(route).length === 0
-		) {
-			setProceedBtnText("No Routes Available");
-			setProceedBtnDisabled(true);
 		} else {
 			setProceedBtnText("Loading...");
 			setProceedBtnDisabled(true);
@@ -182,10 +182,13 @@ export const GlpBuyWidget = () => {
 
 		const result: any = quoteListResponse?.data?.data.result;
 		let route = {};
-		if (result?.routes.length > 0) {
+		if (result?.routes?.length > 0) {
 			route = result?.routes[0];
 			dispatch(setRoute(route));
+		} else if (result?.routes?.length === 0) {
+			dispatch(setRoute([]));
 		}
+
 		if (result?.refuel) {
 			dispatch(setRefuelDetail(result?.refuel));
 			dispatch(setRefuelFromAmount(result?.refuel?.fromAmount));
@@ -302,6 +305,8 @@ export const GlpBuyWidget = () => {
 			setDestinationCallData(DESTINATION_CALLDATA);
 			setFinalRoute(FINAL_ROUTE);
 			setTabIndex(1);
+			setProceedBtnText("Proceed");
+			setProceedBtnDisabled(false);
 		} else {
 			setProceedBtnText("No Routes Available");
 			setProceedBtnDisabled(true);

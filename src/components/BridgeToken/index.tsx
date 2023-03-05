@@ -360,7 +360,7 @@ export const BridgeTokens = ({
 				</div>
 			)}
 			{sourceTxHash === "" && chain?.id != inputChainId && (
-				<div className="mt-14">
+				<div className="mt-[4.5rem]">
 					<SwitchNetworkButton bgColor="#2E3FD9" />
 				</div>
 			)}
@@ -373,7 +373,7 @@ export const BridgeTokens = ({
 					bigNumberify(inputChainNativeToken.balance)!
 				) && (
 					<>
-						<div className={`flex flex-row gap-4 mt-14`}>
+						<div className={`flex flex-row gap-4 mt-[4.5rem]`}>
 							<PrimaryButton
 								buttonText={`Not enough ${
 									inputChainNativeToken?.symbol
@@ -397,7 +397,7 @@ export const BridgeTokens = ({
 						bigNumberify(inputChainNativeToken.balance)!
 					)
 				) && (
-					<div className={`flex flex-row gap-4 mt-14`}>
+					<div className={`flex flex-row gap-4 mt-[4.5rem]`}>
 						{!hideApproveBtn && (
 							<PrimaryButton
 								buttonText={approveBtnText}
