@@ -1,3 +1,5 @@
+import { disclaimerProperty } from "../config";
+
 export const saveTxDetails = (
 	account: string,
 	srcTxHash: string,
@@ -40,4 +42,8 @@ export const saveTxDetails = (
 
 	localStorage.setItem("txData", JSON.stringify(prevTxDetails));
 	return prevTxDetails;
+};
+
+export const saveDisclaimerResponse = () => {
+	localStorage.setItem(disclaimerProperty, "true");
 };

@@ -28,3 +28,5 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const GAS_LIMIT_FOR_BUYING_GLP = "1930000";
 
 export const INPUT_TOKEN_AMOUNT_FIELD_DEBOUNCE_TIMEOUT = 1500;
+
+export const disclaimerProperty = "doNotShowDisclaimer";
