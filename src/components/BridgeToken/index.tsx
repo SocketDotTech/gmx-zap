@@ -145,13 +145,12 @@ export const BridgeTokens = ({
 		onSuccess: (data: any) => {
 			setLoading(false);
 			setApiTxData(data.data?.result);
-			const { allowanceTarget, minimumApprovalAmount } =
-				data.data.result.approvalData;
-			setMinimumApprovalAmount(minimumApprovalAmount);
-			if (allowanceTarget === null) {
+			const approvalData = data?.data?.result?.approvalData;
+			setMinimumApprovalAmount(approvalData?.minimumApprovalAmount);
+			if (!approvalData) {
 				setHideBridgeBtn(false);
 			} else {
-				setAllowanceTarget(allowanceTarget);
+				setAllowanceTarget(approvalData?.allowanceTarget);
 			}
 		},
 	});
