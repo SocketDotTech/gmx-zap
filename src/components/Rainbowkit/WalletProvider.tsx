@@ -1,53 +1,59 @@
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import "@rainbow-me/rainbowkit/styles.css";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import {
-	_Arbitrum,
-	_Avalanche,
-	_BSC,
-	_Ethereum,
-	_Fantom,
-	_Optimism,
-	_Polygon,
-} from "./chains";
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  bsc,
+  avalanche,
+  fantom,
+} from "@wagmi/chains";
 import { customTheme } from "./theme";
 
+// chains with icon
+const bscWithIcon = {
+  ...bsc,
+  iconUrl: "https://movricons.s3.ap-south-1.amazonaws.com/BSC.svg",
+};
+const fantomWithIcon = {
+  ...fantom,
+  iconUrl: "https://movricons.s3.ap-south-1.amazonaws.com/Fantom.svg",
+};
+
 const { chains, provider } = configureChains(
-	[
-		_Ethereum,
-		_Polygon,
-		_Optimism,
-		_Arbitrum,
-		_BSC,
-		_Avalanche,
-		_Fantom as any,
-	],
-	[
-		alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID! }),
-		publicProvider(),
-	]
+  [
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
+    bscWithIcon,
+    avalanche,
+    fantomWithIcon,
+  ],
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-	appName: "GMX x Socket",
-	chains,
+  appName: "GMX x Socket",
+  chains,
 });
 
 const wagmiClient = createClient({
-	autoConnect: true,
-	connectors,
-	provider,
+  autoConnect: true,
+  connectors,
+  provider,
 });
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
-	return (
-		<WagmiConfig client={wagmiClient}>
-			<RainbowKitProvider coolMode chains={chains} theme={customTheme}>
-				{children}
-			</RainbowKitProvider>
-		</WagmiConfig>
-	);
+  return (
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider coolMode chains={chains} theme={customTheme}>
+        {children}
+      </RainbowKitProvider>
+    </WagmiConfig>
+  );
 };
