@@ -145,13 +145,12 @@ export const BridgeTokens = ({
 		onSuccess: (data: any) => {
 			setLoading(false);
 			setApiTxData(data.data?.result);
-			const { allowanceTarget, minimumApprovalAmount } =
-				data.data.result.approvalData;
-			setMinimumApprovalAmount(minimumApprovalAmount);
-			if (allowanceTarget === null) {
+			const approvalData = data?.data?.result?.approvalData;
+			setMinimumApprovalAmount(approvalData?.minimumApprovalAmount);
+			if (!approvalData) {
 				setHideBridgeBtn(false);
 			} else {
-				setAllowanceTarget(allowanceTarget);
+				setAllowanceTarget(approvalData?.allowanceTarget);
 			}
 		},
 	});
@@ -238,8 +237,6 @@ export const BridgeTokens = ({
 			// Initiates approval transaction on user's frontend which user has to sign
 			const receipt = await tx.wait();
 
-			console.log("Approval Transaction Hash :", receipt.transactionHash);
-
 			setLoadingApproveBtn(false);
 			setApproveBtnText("Approved");
 			setTimeout(() => {
@@ -280,8 +277,6 @@ export const BridgeTokens = ({
 			const receipt = await tx.wait();
 
 			const txHash = receipt.transactionHash;
-
-			console.log("Bridging Transaction : ", receipt.transactionHash);
 
 			setLoadingBridgeBtn(false);
 			// setBridgeBtnText("Bridging Tx initiated");
