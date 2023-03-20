@@ -23,7 +23,7 @@ export const PrimaryButton = ({
 }: Props) => {
 	return (
 		<button
-			className="px-4 py-4 disabled:opacity-75 disabled:cursor-not-allowed text-base font-semibold w-full rounded"
+			className="px-4 py-4 disabled:opacity-75 disabled:cursor-not-allowed text-base font-semibold w-full rounded hover:opacity-100 opacity-95"
 			style={{
 				backgroundColor: completed ? "gray" : bgColor,
 				width: width,
@@ -31,7 +31,7 @@ export const PrimaryButton = ({
 			disabled={disabled}
 			onClick={onClick}
 		>
-			<span style={{ color: textColorPrimary }}>
+			<span style={{ color: textColorPrimary }} className="text-lg">
 				{loading && (
 					<img
 						src="assets/loading.svg"
