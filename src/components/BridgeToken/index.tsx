@@ -237,8 +237,6 @@ export const BridgeTokens = ({
 			// Initiates approval transaction on user's frontend which user has to sign
 			const receipt = await tx.wait();
 
-			console.log("Approval Transaction Hash :", receipt.transactionHash);
-
 			setLoadingApproveBtn(false);
 			setApproveBtnText("Approved");
 			setTimeout(() => {
@@ -279,8 +277,6 @@ export const BridgeTokens = ({
 			const receipt = await tx.wait();
 
 			const txHash = receipt.transactionHash;
-
-			console.log("Bridging Transaction : ", receipt.transactionHash);
 
 			setLoadingBridgeBtn(false);
 			// setBridgeBtnText("Bridging Tx initiated");

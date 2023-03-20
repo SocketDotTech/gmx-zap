@@ -87,7 +87,7 @@ export const TxnHistory = ({ setTabIndex }: TxnHistoryProps) => {
 								No Recent Transactions
 							</span>
 							<span className="font-medium py-4 text-zinc-400 text-center text-sm">
-								Tx History is stored locally and will be deleted
+								Transaction History is stored locally and will be deleted
 								if browser cache is cleared.
 							</span>
 						</div>
