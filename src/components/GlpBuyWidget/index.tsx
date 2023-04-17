@@ -271,6 +271,14 @@ export const GlpBuyWidget = () => {
     }
   };
 
+  const userTxs = route?.userTxs;
+  const fundMovrTx = userTxs?.filter(
+    (tx: any) => tx.userTxType === "fund-movr"
+  )?.[0];
+  const bridgeStep = fundMovrTx?.steps?.filter(
+    (step: any) => step.type === "bridge"
+  )?.[0];
+
   return (
     <>
       {/* GLP Bridge Widget */}
@@ -308,14 +316,6 @@ export const GlpBuyWidget = () => {
             {quoteListResponse.isSuccess && Object.keys(route).length !== 0 && (
               <>
                 <div className="px-3 py-3.5 bg-[#2F3043] rounded-lg">
-                  {/* <div className="flex justify-between">
-											<div className="grow text-sm text-zinc-400 font-medium mr-2">
-												Bridge
-											</div>
-											<div className="text-sm text-white font-medium text-right">
-												{route.usedBridgeNames[0]}
-											</div>
-										</div> */}
                   <div className="flex justify-between">
                     <div className="grow text-sm text-zinc-400 font-medium mr-2">
                       Estimated Time
@@ -338,6 +338,19 @@ export const GlpBuyWidget = () => {
                         .toString()}{" "}
                       {chainsInfo[inputChainId].currency.symbol} ($
                       {route.totalGasFeesInUsd.toFixed(2).toString()})
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="grow text-sm text-zinc-400 font-medium mr-2">
+                      Bridge Fees
+                    </div>
+                    <div className="text-sm text-white font-medium text-right capitalize">
+                      {formatAmount(
+                        bridgeStep?.protocolFees?.amount,
+                        bridgeStep?.protocolFees?.asset?.decimals
+                      )}{" "}
+                      {bridgeStep?.protocolFees?.asset?.symbol} ($
+                      {bridgeStep?.protocolFees?.feesInUsd?.toFixed(3)})
                     </div>
                   </div>
                   {/* <div className="flex justify-between">
@@ -400,7 +413,7 @@ export const GlpBuyWidget = () => {
                 disabled={proceedBtnDisabled}
                 onClick={proceedToFinal}
               >
-                {proceedBtnText === 'loading...' && (
+                {proceedBtnText === "loading..." && (
                   <div className="absolute left-4 top-3.5 animate-spin w-4 h-4 rounded-full border-2 border-white border-b-[#ffffff50]" />
                 )}
                 {proceedBtnText}
