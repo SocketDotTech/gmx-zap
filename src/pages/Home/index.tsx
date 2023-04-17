@@ -5,7 +5,7 @@ import ReactGA from "react-ga4";
 export const Home = () => {
   useEffect(() => {
     // @ts-ignore
-    ReactGA.initialize(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID);
+    ReactGA.initialize(process.env.REACT_APP_GA_MEASUREMENT_ID);
     ReactGA.send("pageview");
   }, []);
 
