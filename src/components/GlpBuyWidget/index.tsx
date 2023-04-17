@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { Interface } from "ethers/lib/utils.js";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useAccount, useNetwork, useSigner } from "wagmi";
+import { useAccount, useNetwork, useSigner, useProvider } from "wagmi";
 import {
   abis,
   BASIS_DIVISOR_FOR_SLIPPAGE,
@@ -28,7 +28,12 @@ import {
   setRefuelToAmount,
   setRoute,
 } from "../../redux";
-import { getQuote, getTokenBalanceByTokenAddress } from "../../services";
+import {
+  getGlpVault,
+  getQuote,
+  getTokenBalanceByTokenAddress,
+  getTokenPriceByTokenAddress,
+} from "../../services";
 import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
@@ -57,6 +62,10 @@ export const GlpBuyWidget = () => {
   );
   const { route, slippage } = useAppSelector((state) => state.route);
   const { enabledRefuel } = useAppSelector((state) => state.refuel);
+
+  const provider = useProvider();
+
+  // console.log('provider', provider);
 
   const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
   const [proceedBtnText, setProceedBtnText] = useState<string>("Proceed");
@@ -278,6 +287,63 @@ export const GlpBuyWidget = () => {
   const bridgeStep = fundMovrTx?.steps?.filter(
     (step: any) => step.type === "bridge"
   )?.[0];
+  const sourceTokenAddress = bridgeStep?.fromAsset?.address;
+
+  // let price;
+  const { data } = useQuery(
+    ["preBridgeTokenPrice"],
+    () =>
+      getTokenPriceByTokenAddress({
+        chainId: bridgeStep.fromAsset.chainId.toString(),
+        tokenAddress: sourceTokenAddress,
+      }),
+    {
+      enabled: !!bridgeStep?.fromAsset?.address,
+    }
+  );
+
+  const { data: fee } = useQuery(
+    ["glpFees"],
+    () => {
+      //@ts-ignore
+      const tokenPrice = data?.data?.result?.tokenPrice;
+      const tokenAddress = bridgeStep?.fromAsset?.address;
+      return getGlpVault({
+        provider: provider,
+        chainId: bridgeStep?.fromAsset?.chainId,
+        tokenAddress: tokenAddress,
+        tokenAmount: bridgeStep?.fromAmount,
+        tokenPrice: tokenPrice,
+      });
+    },
+    {
+      enabled: !!(
+        // @ts-ignore
+        data?.data?.result?.tokenPrice && bridgeStep?.fromAsset?.address
+      ),
+    }
+  );
+
+  useEffect(() => {
+    console.log('fee outside: ', fee?.toString());
+  }, [fee]);
+
+  // useEffect(() => {
+  //   //@ts-ignore
+  //   const tokenPrice = data?.data?.result?.tokenPrice;
+  //   const tokenAddress = bridgeStep?.fromAsset?.address;
+  //   const feeData =
+  //     bridgeStep &&
+  //     tokenPrice &&
+  //     getGlpVault({
+  //       provider: provider,
+  //       chainId: bridgeStep?.fromAsset?.chainId,
+  //       tokenAddress: tokenAddress,
+  //       tokenAmount: bridgeStep?.fromAmount,
+  //       tokenPrice: tokenPrice,
+  //     });
+  //   console.log('fees', feeData?.fee?.toString());
+  // }, [route, data]);
 
   return (
     <>
