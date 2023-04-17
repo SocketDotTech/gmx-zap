@@ -18,31 +18,7 @@ export const DisclaimerModal = ({
 				<div className="px-7 py-5">
 					<ul className="list-disc pl-5">
 						<li>
-							This site enabling users to buy GLP from any chain,
-							with any asset in a single transaction is a
-							third-party integration, powered by{" "}
-							<a
-								href="https://socket.tech"
-								target="_blank"
-								className="underline font-medium"
-							>
-								Socket
-							</a>
-						</li>
-						<li className="mt-4">
-							Socket is a complete interoperability stack for
-							secure asset & data transfer across chains, enabling
-							developers to build truly cross-chain apps.
-						</li>
-						<li className="mt-4 mb-6">
-							To learn more about how Socket works, go to{" "}
-							<a
-								href="https://docs.socket.tech"
-								target="_blank"
-								className="underline font-medium"
-							>
-								docs.socket.tech
-							</a>
+							This site enables users to buy GLP from any chain, with any asset, in a single transaction. It is a third-party integration, powered by Socket
 						</li>
 					</ul>
 					<PrimaryButton
