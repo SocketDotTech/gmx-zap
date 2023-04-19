@@ -147,9 +147,9 @@ export const InputTokenDetail = () => {
 				</div>
 				<div
 					onClick={() => {
-						setInputTokenAmountField(inputTokenBalance.toString());
+						setInputTokenAmountField(inputTokenBalance?.toString());
 						debouncedDispatchTokenAmount(
-							inputTokenBalance.toString()
+							inputTokenBalance?.toString()
 						);
 					}}
 					className="font-medium mr-2 h-fit text-xs p-1 rounded text-white bg-[#2F4F4F] hover:bg-opacity-80 shadow-inner cursor-pointer"

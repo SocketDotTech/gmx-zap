@@ -55,7 +55,7 @@ export const InputTokenSelectDropdown = ({
 
       const restTokens = options.filter((token) => {
         return !_sortedTokens.some(
-          (x) => x.address.toLowerCase() === token.address.toLowerCase()
+          (x) => x?.address?.toLowerCase() === token?.address?.toLowerCase()
         );
       });
 
