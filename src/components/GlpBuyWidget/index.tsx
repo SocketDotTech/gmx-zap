@@ -287,63 +287,43 @@ export const GlpBuyWidget = () => {
   const bridgeStep = fundMovrTx?.steps?.filter(
     (step: any) => step.type === "bridge"
   )?.[0];
-  const sourceTokenAddress = bridgeStep?.fromAsset?.address;
+  const destTokenAddress = bridgeStep?.toAsset?.address;
 
   // let price;
   const { data } = useQuery(
-    ["preBridgeTokenPrice"],
+    ["postBridgeTokenPrice"],
     () =>
       getTokenPriceByTokenAddress({
-        chainId: bridgeStep.fromAsset.chainId.toString(),
-        tokenAddress: sourceTokenAddress,
+        chainId: bridgeStep.toChainId,
+        tokenAddress: destTokenAddress,
       }),
     {
-      enabled: !!bridgeStep?.fromAsset?.address,
+      enabled: !!bridgeStep?.toAsset?.address,
     }
   );
 
   const { data: fee } = useQuery(
-    ["glpFees"],
+    ["glpFees", data, bridgeStep],
     () => {
       //@ts-ignore
       const tokenPrice = data?.data?.result?.tokenPrice;
-      const tokenAddress = bridgeStep?.fromAsset?.address;
+      const tokenAddress = bridgeStep?.toAsset?.address;
       return getGlpVault({
-        provider: provider,
-        chainId: bridgeStep?.fromAsset?.chainId,
+        chainId: bridgeStep?.toChainId,
         tokenAddress: tokenAddress,
-        tokenAmount: bridgeStep?.fromAmount,
+        tokenAmount: bridgeStep?.toAmount,
         tokenPrice: tokenPrice,
       });
     },
     {
       enabled: !!(
         // @ts-ignore
-        data?.data?.result?.tokenPrice && bridgeStep?.fromAsset?.address
+        data?.data?.result?.tokenPrice && bridgeStep?.toAsset?.address
       ),
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
     }
   );
-
-  useEffect(() => {
-    console.log('fee outside: ', fee?.toString());
-  }, [fee]);
-
-  // useEffect(() => {
-  //   //@ts-ignore
-  //   const tokenPrice = data?.data?.result?.tokenPrice;
-  //   const tokenAddress = bridgeStep?.fromAsset?.address;
-  //   const feeData =
-  //     bridgeStep &&
-  //     tokenPrice &&
-  //     getGlpVault({
-  //       provider: provider,
-  //       chainId: bridgeStep?.fromAsset?.chainId,
-  //       tokenAddress: tokenAddress,
-  //       tokenAmount: bridgeStep?.fromAmount,
-  //       tokenPrice: tokenPrice,
-  //     });
-  //   console.log('fees', feeData?.fee?.toString());
-  // }, [route, data]);
 
   return (
     <>
@@ -439,6 +419,15 @@ export const GlpBuyWidget = () => {
                       {formatAmount(minGlpAmount, GLP_DECIMALS, 3, true)} GLP
                     </div>
                   </div>
+                  {!!fee && 
+                  <div className="flex justify-between">
+                    <div className="grow text-sm text-zinc-400 font-medium mr-2">
+                      GLP Fees
+                    </div>
+                    <div className="text-sm text-white font-medium text-right">
+                      {fee}%
+                    </div>
+                  </div>}
                 </div>
                 <div className="pb-3"></div>
               </>
