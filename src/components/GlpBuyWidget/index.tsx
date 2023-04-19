@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { Interface } from "ethers/lib/utils.js";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useAccount, useNetwork, useSigner } from "wagmi";
+import { useAccount, useNetwork, useSigner, useProvider } from "wagmi";
 import {
   abis,
   BASIS_DIVISOR_FOR_SLIPPAGE,
@@ -28,7 +28,12 @@ import {
   setRefuelToAmount,
   setRoute,
 } from "../../redux";
-import { getQuote, getTokenBalanceByTokenAddress } from "../../services";
+import {
+  getGlpVault,
+  getQuote,
+  getTokenBalanceByTokenAddress,
+  getTokenPriceByTokenAddress,
+} from "../../services";
 import { BridgeTokens } from "../BridgeToken";
 import { ChainsSelect } from "../ChainSelect";
 import { TokensDetail } from "../TokenDetail";
@@ -278,6 +283,43 @@ export const GlpBuyWidget = () => {
   const bridgeStep = fundMovrTx?.steps?.filter(
     (step: any) => step.type === "bridge"
   )?.[0];
+  const destTokenAddress = bridgeStep?.toAsset?.address;
+
+  // let price;
+  const { data } = useQuery(
+    ["postBridgeTokenPrice"],
+    () =>
+      getTokenPriceByTokenAddress({
+        chainId: bridgeStep.toChainId,
+        tokenAddress: destTokenAddress,
+      }),
+    {
+      enabled: !!bridgeStep?.toAsset?.address,
+    }
+  );
+
+  const { data: fee } = useQuery(
+    ["glpFees", data, bridgeStep],
+    () => {
+      //@ts-ignore
+      const tokenPrice = data?.data?.result?.tokenPrice;
+      const tokenAddress = bridgeStep?.toAsset?.address;
+      return getGlpVault({
+        chainId: bridgeStep?.toChainId,
+        tokenAddress: tokenAddress,
+        tokenAmount: bridgeStep?.toAmount,
+        tokenPrice: tokenPrice,
+      });
+    },
+    {
+      enabled: !!(
+        // @ts-ignore
+        data?.data?.result?.tokenPrice && bridgeStep?.toAsset?.address
+      ),
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    }
+  );
 
   return (
     <>
@@ -373,6 +415,15 @@ export const GlpBuyWidget = () => {
                       {formatAmount(minGlpAmount, GLP_DECIMALS, 3, true)} GLP
                     </div>
                   </div>
+                  {!!fee && 
+                  <div className="flex justify-between">
+                    <div className="grow text-sm text-zinc-400 font-medium mr-2">
+                      GLP Fees
+                    </div>
+                    <div className="text-sm text-white font-medium text-right">
+                      {fee}%
+                    </div>
+                  </div>}
                 </div>
                 <div className="pb-3"></div>
               </>
