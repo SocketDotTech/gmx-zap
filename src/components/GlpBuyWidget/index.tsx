@@ -195,28 +195,6 @@ export const GlpBuyWidget = () => {
     inputTokenAmount,
   ]);
 
-  useEffect(() => {
-    if (Object.keys(route).length === 0) {
-      if (minGlpReceived !== "") setMinGlpReceived("");
-    } else {
-      const glpPriceInUSD = formatAmount(glpPrice, USD_DECIMALS, 10, false);
-      let minGlpAmount = (
-        (route.receivedValueInUsd + route.totalGasFeesInUsd) /
-        parseFloat(glpPriceInUSD)
-      ).toString();
-
-      setMinGlpReceived(minGlpAmount);
-      minGlpAmount = limitDecimals(minGlpAmount, 5);
-
-      minGlpAmount = bigNumberify((parseFloat(minGlpAmount) * 1e5).toFixed(0))
-        ?.mul(BASIS_DIVISOR_FOR_SLIPPAGE - slippage * 1000)
-        .div(BASIS_DIVISOR_FOR_SLIPPAGE)
-        .toString()!;
-
-      setMinGlpAmount(expandDecimals(minGlpAmount, 13));
-    }
-  }, [route, slippage]);
-
   const proceedToFinal = async () => {
     if (!address) return;
     setProceedBtnText("loading...");
@@ -314,12 +292,39 @@ export const GlpBuyWidget = () => {
     {
       enabled: !!(
         // @ts-ignore
-        data?.data?.result?.tokenPrice && bridgeStep?.toAsset?.address
+        (data?.data?.result?.tokenPrice && bridgeStep?.toAsset?.address)
       ),
       refetchOnMount: true,
       refetchOnWindowFocus: true,
     }
   );
+
+  useEffect(() => {
+    if (Object.keys(route).length === 0) {
+      if (minGlpReceived !== "") setMinGlpReceived("");
+    } else if (fee) {
+      const glpPriceInUSD = formatAmount(glpPrice, USD_DECIMALS, 10, false);
+      const minGlpAmountWithoutDeduction =
+        (route.receivedValueInUsd + route.totalGasFeesInUsd) /
+        parseFloat(glpPriceInUSD);
+
+      // Deducting amount as per glp fee
+      let minGlpAmount = (
+        minGlpAmountWithoutDeduction -
+        (minGlpAmountWithoutDeduction * fee) / 100
+      )?.toString();
+
+      setMinGlpReceived(minGlpAmount);
+      minGlpAmount = limitDecimals(minGlpAmount, 5);
+
+      minGlpAmount = bigNumberify((parseFloat(minGlpAmount) * 1e5).toFixed(0))
+        ?.mul(BASIS_DIVISOR_FOR_SLIPPAGE - slippage * 1000)
+        .div(BASIS_DIVISOR_FOR_SLIPPAGE)
+        .toString()!;
+
+      setMinGlpAmount(expandDecimals(minGlpAmount, 13));
+    }
+  }, [route, slippage, fee]);
 
   return (
     <>
@@ -415,15 +420,16 @@ export const GlpBuyWidget = () => {
                       {formatAmount(minGlpAmount, GLP_DECIMALS, 3, true)} GLP
                     </div>
                   </div>
-                  {!!fee && 
-                  <div className="flex justify-between">
-                    <div className="grow text-sm text-zinc-400 font-medium mr-2">
-                      GLP Fees
+                  {!!fee && (
+                    <div className="flex justify-between">
+                      <div className="grow text-sm text-zinc-400 font-medium mr-2">
+                        GLP Fees
+                      </div>
+                      <div className="text-sm text-white font-medium text-right">
+                        {fee}%
+                      </div>
                     </div>
-                    <div className="text-sm text-white font-medium text-right">
-                      {fee}%
-                    </div>
-                  </div>}
+                  )}
                 </div>
                 <div className="pb-3"></div>
               </>
