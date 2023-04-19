@@ -63,10 +63,6 @@ export const GlpBuyWidget = () => {
   const { route, slippage } = useAppSelector((state) => state.route);
   const { enabledRefuel } = useAppSelector((state) => state.refuel);
 
-  const provider = useProvider();
-
-  // console.log('provider', provider);
-
   const [proceedBtnDisabled, setProceedBtnDisabled] = useState<boolean>(true);
   const [proceedBtnText, setProceedBtnText] = useState<string>("Proceed");
   const [minGlpReceived, setMinGlpReceived] = useState<string>("");
