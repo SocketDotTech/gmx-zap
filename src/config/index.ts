@@ -6,6 +6,7 @@ import readerAbi from "./abis/Reader.json";
 import rewardReaderAbi from "./abis/RewardReader.json";
 import rewardRouterAbi from "./abis/RewardRouter.json";
 import socketGlpWrapperAbi from "./abis/SocketGlpWrapper.json";
+import vaultAbi from "./abis/Vault.json";
 import { NativeTokenDetail } from "../types";
 import {
 	ARBITRUM,
@@ -55,6 +56,7 @@ export const abis = {
 	rewardReaderAbi,
 	rewardRouterAbi,
 	socketGlpWrapperAbi,
+	vaultAbi
 };
 
 export * from "./contracts";
