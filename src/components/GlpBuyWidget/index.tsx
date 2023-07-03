@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { Interface } from "ethers/lib/utils.js";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useAccount, useNetwork, useSigner, useProvider } from "wagmi";
+import { useAccount, useNetwork, } from "wagmi";
 import {
   abis,
   BASIS_DIVISOR_FOR_SLIPPAGE,
@@ -41,7 +41,6 @@ import { WidgetHeader } from "../WidgetHeader";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { TxnHistory } from "../TxnHistory";
 import { SwitchNetworkButton } from "../Button";
-// import { RefuelBox } from "../RefuelBox";
 
 let quoteListResponse: any;
 
@@ -148,7 +147,7 @@ export const GlpBuyWidget = () => {
     } else if ((parseFloat(inputTokenAmount) || 0) > (inputTokenBalance || 0)) {
       setProceedBtnText("Not Enough Balance");
       setProceedBtnDisabled(true);
-    } else if (chain!.id !== inputChainId) {
+    } else if (chain?.id !== inputChainId) {
       setProceedBtnText(`Switch Network`);
       setProceedBtnDisabled(true);
     } else if (quoteListResponse.isSuccess && Object.keys(route).length !== 0) {

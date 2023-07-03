@@ -10,16 +10,16 @@ import {
 import { queryResponseObj } from "../../types";
 import { PrimaryButton, SwitchNetworkButton } from "../Button";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import {
 	bigNumberify,
 	formatAmount,
 	limitDecimals,
-	parseValue,
 	saveTxDetails,
 } from "../../helpers";
 import { setTxDetails } from "../../redux";
-// let bridgeStatus: queryResponseObj;
+import { useEthersSigner } from "../../hooks/useEthersSigner";
+import { useEthersProvider } from "../../hooks/useEthersProvider";
 
 type BridgeTokensProps = {
 	route: any;
@@ -39,8 +39,8 @@ export const BridgeTokens = ({
 	const { chain } = useNetwork();
 	const { address } = useAccount();
 	const dispatch = useAppDispatch();
-	const { data: signer } = useSigner();
-	const provider = useProvider();
+	const signer = useEthersSigner();
+	const provider = useEthersProvider();
 	const { inputToken, inputChainNativeToken } = useAppSelector(
 		(state) => state.tokens
 	);
