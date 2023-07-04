@@ -1,9 +1,7 @@
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import React, { ReactNode } from "react";
-import "@rainbow-me/rainbowkit/styles.css";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
+import "@rainbow-me/rainbowkit/styles.css";
 import {
   _Arbitrum,
   _Avalanche,
@@ -14,29 +12,28 @@ import {
   _Polygon,
 } from "./chains";
 import { customTheme } from "./theme";
+import { RainbowKitProvider, getDefaultWallets } from "@rainbow-me/rainbowkit";
 
-const { chains, provider } = configureChains(
+const { chains, publicClient } = configureChains(
   [_Ethereum, _Polygon, _Optimism, _Arbitrum, _BSC, _Avalanche, _Fantom as any],
-  [
-    alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID! }),
-    publicProvider(),
-  ]
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
   appName: "GMX x Socket",
+  projectId: `${process.env.REACT_APP_WC_PROJECT_ID}`,
   chains,
 });
 
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
+  publicClient,
 });
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider coolMode chains={chains} theme={customTheme}>
         {children}
       </RainbowKitProvider>

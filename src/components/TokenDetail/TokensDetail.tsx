@@ -116,8 +116,6 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 				</p>
 			)}
 			<div className="pb-3"></div>
-			{/* <OutputTokenDetail />
-			<div className="pb-3"></div> */}
 			<ReceiveGlpDetail glpReceived={glpReceived} />
 			{enabledRefuel && toAmount != "" && outputChainId != 0 && (
 				<p className="text-pink-600 text-sm font-semibold">
