@@ -60,8 +60,14 @@ export const InputTokenDetail = () => {
 			},
 			enabled: !!(inputToken.chainId !== 0),
 			refetchOnWindowFocus: false,
-			refetchInterval: 5000,
+			refetchInterval: 20000,
 			refetchIntervalInBackground: true,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			retryDelay: 10000,
+			notifyOnChangeProps: ["data"],
+			retry: 1,
+			
 		}
 	);
 
@@ -79,8 +85,13 @@ export const InputTokenDetail = () => {
 			},
 			enabled: !!(inputToken.chainId !== 0),
 			refetchOnWindowFocus: false,
-			refetchInterval: 10000,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			refetchInterval: 20000,
 			refetchIntervalInBackground: true,
+			retryDelay: 20000,
+			retry: 1,
+			notifyOnChangeProps: ["data"],
 		}
 	);
 
@@ -99,10 +110,16 @@ export const InputTokenDetail = () => {
 				if (!tokenBalance[inputToken.address])
 					dispatch(setInputTokenBalance(0));
 				dispatch(
-					setInputTokenBalance(tokenBalance[inputToken.address])
+					setInputTokenBalance(tokenBalance?.[inputToken.address] ?? 0)
 				);
 			},
 			enabled: !!address,
+			notifyOnChangeProps: ["data"],
+			refetchInterval: 5000,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
+			refetchOnWindowFocus: false,
+		
 		}
 	);
 

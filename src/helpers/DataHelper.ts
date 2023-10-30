@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import {
 	glpSupportedTokens,
+	SUPPORTED_USDC_TOKENS,
 	supportedInputChains,
 	supportedOutputChains,
 	USD_DECIMALS,
@@ -84,8 +85,7 @@ export const getToTokensListFromResponse = (
 		glpSupportedTokens[outputChainId].includes(token.symbol)
 	);
 	let outputToken: TokenDetail = tokenList[0];
-
-	outputToken = tokenList.filter((token) => token.symbol === "USDC")[0];
+	outputToken = tokenList.filter((token) => token.address.toLowerCase() === SUPPORTED_USDC_TOKENS[outputChainId].toLowerCase())[0];
 
 	return { toTokensList: tokenList, outputTokenInfo: outputToken };
 };
