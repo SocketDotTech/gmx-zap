@@ -54,7 +54,9 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 					dispatch(setInputToken(inputTokenInfo));
 			},
 			enabled: !!inputChainId,
-			refetchOnWindowFocus: true,
+			refetchOnWindowFocus: false,
+			refetchInterval: 60000,
+			notifyOnChangeProps: ["data"],
 		}
 	);
 
@@ -77,6 +79,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: true,
+			notifyOnChangeProps: ["data"],
 		}
 	);
 
@@ -100,9 +103,13 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 				dispatch(setNativeToken(nativeTokenDetail));
 			},
 			enabled: !!outputChainId,
-			refetchOnWindowFocus: true,
-			refetchInterval: 5000,
+			refetchOnWindowFocus: false,
+			refetchInterval: 20000,
+			refetchOnMount: false,
+			refetchOnReconnect: false,
 			refetchIntervalInBackground: false,
+			retryDelay: 10000,
+			retry: 1,
 		}
 	);
 

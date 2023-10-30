@@ -36,6 +36,9 @@ export const ChainsSelect: React.FC = () => {
 				dispatch(setOutputChainId(toChainsList[0].chainId));
 		},
 		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+		refetchOnReconnect: false,
+		refetchInterval: 60000,
 	});
 
 	useEffect(() => {

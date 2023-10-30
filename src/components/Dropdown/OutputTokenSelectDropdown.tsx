@@ -41,6 +41,7 @@ export const OutputTokenSelectDropdown = ({
 			}),
 		{
 			enabled: !!address,
+			refetchInterval: 10000
 		}
 	);
 

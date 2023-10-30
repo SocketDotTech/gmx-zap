@@ -137,7 +137,7 @@ export const BridgeTokens = ({
 				);
 				dispatch(setTxDetails({ prevTxDetails: prevTxDetails }));
 			},
-			// refetchInterval: 20000,
+			refetchInterval: 20000,
 		}
 	);
 

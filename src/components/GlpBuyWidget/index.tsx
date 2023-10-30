@@ -85,9 +85,12 @@ export const GlpBuyWidget = () => {
         dispatch(setInputChainNativeToken(response));
       },
       enabled: !!(inputToken.chainId !== 0 && address != undefined),
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
+      refetchOnMount:false,
+      refetchOnReconnect:false,
       refetchInterval: 5000,
       refetchIntervalInBackground: true,
+      notifyOnChangeProps: ["data"],
     }
   );
 
@@ -168,6 +171,7 @@ export const GlpBuyWidget = () => {
   ]);
 
   useEffect(() => {
+    console.log(',,rrr,')
     if (!quoteListResponse.isSuccess) return;
     if (inputTokenAmount === "") {
       dispatch(setRoute({}));
@@ -272,6 +276,8 @@ export const GlpBuyWidget = () => {
       }),
     {
       enabled: !!bridgeStep?.toAsset?.address,
+      refetchInterval: 10000,
+      notifyOnChangeProps: ["data"],
     }
   );
 
@@ -295,6 +301,8 @@ export const GlpBuyWidget = () => {
       ),
       refetchOnMount: true,
       refetchOnWindowFocus: true,
+      refetchInterval: 10000,
+      notifyOnChangeProps: ["data"],
     }
   );
 
@@ -303,8 +311,9 @@ export const GlpBuyWidget = () => {
       if (minGlpReceived !== "") setMinGlpReceived("");
     } else if (fee) {
       const glpPriceInUSD = formatAmount(glpPrice, USD_DECIMALS, 10, false);
+      console.log({rr: route.receivedValueInUsd});
       const minGlpAmountWithoutDeduction =
-        (route.receivedValueInUsd + route.totalGasFeesInUsd) /
+        (route.outputValueInUsd ) /
         parseFloat(glpPriceInUSD);
 
       // Deducting amount as per glp fee
