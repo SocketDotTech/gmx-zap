@@ -4,7 +4,7 @@ import { bigNumberify } from "../helpers";
 export const glpSupportedTokens: {
 	[x: number]: string[];
 } = {
-	42161: ["WBTC", "LINK", "UNI", "USDC", "USDT", "DAI", "FRAX", "WETH"],
+	42161: ["WBTC", "LINK", "UNI", "USDC", "USDT", "DAI", "FRAX", "WETH", "USDC.E"],
 	43114: ["WETH.E", "WBTC.E", "BTC.B", "USDC", "USDC.E", "WAVAX"],
 };
 
