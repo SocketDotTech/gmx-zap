@@ -55,7 +55,7 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			},
 			enabled: !!inputChainId,
 			refetchOnWindowFocus: false,
-			refetchInterval: 60000,
+			refetchInterval: 40000,
 			notifyOnChangeProps: ["data"],
 		}
 	);
@@ -104,11 +104,11 @@ export const TokensDetail = ({ glpReceived }: { glpReceived: string }) => {
 			},
 			enabled: !!outputChainId,
 			refetchOnWindowFocus: false,
-			refetchInterval: 20000,
+			refetchInterval: 40000,
 			refetchOnMount: false,
 			refetchOnReconnect: false,
 			refetchIntervalInBackground: false,
-			retryDelay: 10000,
+			retryDelay: 40000,
 			retry: 1,
 		}
 	);

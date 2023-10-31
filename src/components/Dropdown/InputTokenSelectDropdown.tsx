@@ -80,7 +80,7 @@ export const InputTokenSelectDropdown = ({
         setTokenBalance(tokenBalance);
       },
       enabled: !!address,
-      refetchInterval: 10000,
+      refetchInterval: 40000,
     }
   );
 
@@ -94,7 +94,7 @@ export const InputTokenSelectDropdown = ({
       }),
     {
       enabled: !!isAddress,
-      refetchInterval: 10000,
+      refetchInterval: 40000,
     }
   );
 

@@ -276,7 +276,7 @@ export const GlpBuyWidget = () => {
       }),
     {
       enabled: !!bridgeStep?.toAsset?.address,
-      refetchInterval: 10000,
+      refetchInterval: 40000,
       notifyOnChangeProps: ["data"],
     }
   );
